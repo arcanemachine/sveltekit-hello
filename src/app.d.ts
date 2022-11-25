@@ -7,3 +7,9 @@ declare namespace App {
   // interface Error {}
   // interface Platform {}
 }
+
+declare module 'svelte-fa/src/fa.svelte';
+
+// declare module '@fortawesome/pro-solid-svg-icons/index.d.ts' {
+//   export * from '@fortawesome/pro-solid-svg-icons';
+// }

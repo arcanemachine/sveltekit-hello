@@ -1,5 +1,9 @@
 <script>
   import "../app.css";
+
+  export const prerender = true;
 </script>
 
-<slot />
+<main class="flex-center flex h-screen">
+  <slot />
+</main>
