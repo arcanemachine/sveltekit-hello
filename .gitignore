@@ -1,8 +1,16 @@
-# custom
-*.sw?
-*.del
+# misc
+*.tmp
 
-# default
+# environment
+.envrc.*
+
+# vim
+*.sw?
+*.vim
+.vim-sessions/
+
+
+# defaults
 .DS_Store
 node_modules
 /build

@@ -13,18 +13,16 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +1 ./+layout.svelte
-badd +0 ./+page.svelte
-badd +1 ./Session.vim
+badd +1 \+layout.svelte
+badd +1 \+page.svelte
 argglobal
 %argdel
-$argadd ./+layout.svelte
-$argadd ./+page.svelte
-$argadd ./Session.vim
+$argadd \+layout.svelte
+$argadd \+page.svelte
 set stal=2
 tabnew +setlocal\ bufhidden=wipe
 tabrewind
-edit ./+layout.svelte
+edit \+layout.svelte
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -36,17 +34,17 @@ setlocal fdn=5
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 14) / 29)
+let s:l = 1 - ((0 * winheight(0) + 29) / 58)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
 tabnext
-edit ./+page.svelte
+edit \+page.svelte
 argglobal
 2argu
-balt ./+layout.svelte
+balt \+layout.svelte
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -57,12 +55,12 @@ setlocal fdn=5
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 14) / 29)
+let s:l = 4 - ((3 * winheight(0) + 29) / 58)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 4
+normal! 06|
 tabnext 2
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
@@ -76,7 +74,6 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
-set hlsearch
 nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad

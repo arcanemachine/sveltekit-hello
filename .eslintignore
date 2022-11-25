@@ -1,6 +1,4 @@
-# temporary: ignore svelte files
-# *.svelte
-
+# defaults
 .DS_Store
 node_modules
 /build

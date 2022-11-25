@@ -3,6 +3,6 @@
 
 <style lang="postcss">
   p {
-    @apply bg-red-300;
+    @apply bg-red-500;
   }
 </style>
