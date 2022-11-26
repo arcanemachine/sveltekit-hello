@@ -1,7 +1,4 @@
-<script lang="ts">
-  import DarkModeToggle from "$lib/components/NavBar/DarkModeToggle.svelte";
+<script>
 </script>
 
-<section>
-  <DarkModeToggle />
-</section>
+<section />

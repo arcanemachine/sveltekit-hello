@@ -1,11 +1,12 @@
-<script>
+<script type="ts">
   import "../app.css";
-
-  export const prerender = true;
+  import DarkModeToggle from "$lib/components/NavBar/DarkModeToggle.svelte";
 </script>
 
-<header>header</header>
-
 <main class="flex-center flex h-screen">
+  <header>
+    <DarkModeToggle />
+  </header>
+
   <slot />
 </main>

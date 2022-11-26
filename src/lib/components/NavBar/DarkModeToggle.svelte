@@ -1,23 +1,30 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
   import { fly } from "svelte/transition";
   import Fa from "svelte-fa/src/fa.svelte";
   import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons/index.js";
 
-  let lightModeEnabled =
-    Boolean(browser && window.localStorage.getItem("darkModeEnabled") === "1") ?? true;
+  let lightModeEnabled = window.localStorage.getItem("darkModeEnabled") ? true : false;
+
+  // set theme on initial load
+  if (localStorage.getItem("darkModeEnabled")) {
+    document!.querySelector("html")!.dataset.theme = "dark";
+  }
 
   function handleClick(this: HTMLElement) {
-    if (browser && window.localStorage.getItem("darkModeEnabled") === "1") {
-      localStorage.removeItem("darkModeEnabled");
+    lightModeEnabled = !lightModeEnabled;
+
+    if (window.localStorage.getItem("darkModeEnabled") === "1") {
+      document!.querySelector("html")!.dataset.theme = "light"; // set the theme
+      localStorage.removeItem("darkModeEnabled"); // save data to localStorage
     } else {
-      localStorage.setItem("darkModeEnabled", "1");
+      document!.querySelector("html")!.dataset.theme = "dark"; // set the theme
+      localStorage.setItem("darkModeEnabled", "1"); // save data to localStorage
     }
   }
 </script>
 
 <div class="flex">
-  <div class="flex-center mr-3 flex grid">
+  <div class="flex-center mr-2 flex grid">
     {#if lightModeEnabled}
       <div class="item" in:fly={{ x: 30 }}>
         <Fa icon={faSun} style="color: hsl(var(--wa))" />
