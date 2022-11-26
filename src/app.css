@@ -6,3 +6,7 @@
   justify-content: center;
   align-items: center;
 }
+
+.svelte-fa {
+  min-width: 16px;
+}
