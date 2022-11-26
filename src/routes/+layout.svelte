@@ -1,12 +1,25 @@
 <script type="ts">
   import "../app.css";
-  import DarkModeToggle from "$lib/components/NavBar/DarkModeToggle.svelte";
+  import { Navbar, Sidebar } from "$lib/components";
+
+  let bottomNavbarEnabled = false;
 </script>
 
-<main class="flex-center flex h-screen">
-  <header>
-    <DarkModeToggle />
-  </header>
+<div class="drawer-mobile drawer">
+  <input id="sidebar" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content flex flex-col items-center justify-center">
+    <!-- Page content here -->
 
-  <slot />
-</main>
+    {#if !bottomNavbarEnabled}
+      <Navbar />
+    {/if}
+    <main class="flex-grow-1 flex-center flex h-screen w-max">
+      <slot />
+    </main>
+    {#if bottomNavbarEnabled}
+      <Navbar />
+    {/if}
+  </div>
+
+  <Sidebar />
+</div>

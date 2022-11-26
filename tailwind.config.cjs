@@ -3,9 +3,9 @@ module.exports = {
   content: ["./src/**/*.{html,js,svelte,ts}"],
   daisyui: {
     logs: false,
-    themes: ["light", "dark"],
+    themes: ["light", "luxury"],
   },
-  mode: "jit",
+  // mode: "jit",
   plugins: [require("daisyui")],
   theme: {
     extend: {},

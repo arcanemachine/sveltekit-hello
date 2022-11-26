@@ -6,19 +6,19 @@
   let lightModeEnabled = window.localStorage.getItem("darkModeEnabled") ? true : false;
 
   // set theme on initial load
-  if (localStorage.getItem("darkModeEnabled")) {
-    document!.querySelector("html")!.dataset.theme = "dark";
+  if (localStorage.getItem("darkModeEnabled") === "1") {
+    document!.querySelector("html")!.dataset.theme = "luxury";
   }
 
   function handleClick(this: HTMLElement) {
     lightModeEnabled = !lightModeEnabled;
 
     if (window.localStorage.getItem("darkModeEnabled") === "1") {
-      document!.querySelector("html")!.dataset.theme = "light"; // set the theme
       localStorage.removeItem("darkModeEnabled"); // save data to localStorage
+      document!.querySelector("html")!.dataset.theme = "light"; // set the theme
     } else {
-      document!.querySelector("html")!.dataset.theme = "dark"; // set the theme
       localStorage.setItem("darkModeEnabled", "1"); // save data to localStorage
+      document!.querySelector("html")!.dataset.theme = "luxury"; // set the theme
     }
   }
 </script>
