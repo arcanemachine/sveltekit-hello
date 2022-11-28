@@ -1,26 +1,28 @@
 <script type="ts">
-  import DarkModeToggle from "./DarkModeToggle.svelte";
+  import { DarkModeToggle } from ".";
 </script>
 
-<div style="height: 1px;">&nbsp;</div>
 <!-- spacer -->
-<nav class="navbar border-b-2">
-  <label for="sidebar" class="btn-ghost drawer-button btn-square btn lg:hidden"
-    ><svg
-      width="20"
-      height="20"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      class="inline-block h-5 w-5 stroke-current md:h-6 md:w-6"
-      ><path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M4 6h16M4 12h16M4 18h16"
-      /></svg
-    ></label
-  >
+<div style="height: 1px;">&nbsp;</div>
+
+<nav class="navbar border-b-2 transition-colors duration-300">
+  <div class="flex-none lg:hidden">
+    <input id="navbar-drawer" type="checkbox" class="drawer-toggle" />
+    <label for="navbar-drawer" class="btn-ghost btn-square btn">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="inline-block h-6 w-6 stroke-current"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        /></svg
+      >
+    </label>
+  </div>
   <div class="flex-1">
     <span class="lg:hidden">
       <a href="/" aria-current="page" aria-label="Homepage" class="flex-0 btn-ghost btn px-2">

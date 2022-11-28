@@ -3,7 +3,7 @@
   import Fa from "svelte-fa/src/fa.svelte";
   import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons/index.js";
 
-  let lightModeEnabled = window.localStorage.getItem("darkModeEnabled") ? true : false;
+  let lightModeEnabled = localStorage.getItem("darkModeEnabled") === "1" ? false : true;
 
   // set theme on initial load
   if (localStorage.getItem("darkModeEnabled") === "1") {
@@ -13,12 +13,14 @@
   function handleClick(this: HTMLElement) {
     lightModeEnabled = !lightModeEnabled;
 
-    if (window.localStorage.getItem("darkModeEnabled") === "1") {
-      localStorage.removeItem("darkModeEnabled"); // save data to localStorage
-      document!.querySelector("html")!.dataset.theme = "light"; // set the theme
-    } else {
+    if (window.localStorage.getItem("darkModeEnabled") !== "1") {
+      // enable dark mode
       localStorage.setItem("darkModeEnabled", "1"); // save data to localStorage
       document!.querySelector("html")!.dataset.theme = "luxury"; // set the theme
+    } else {
+      // disable dark mode
+      localStorage.removeItem("darkModeEnabled"); // save data to localStorage
+      document!.querySelector("html")!.dataset.theme = "emerald"; // set the theme
     }
   }
 </script>

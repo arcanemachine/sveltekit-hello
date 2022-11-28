@@ -5,8 +5,8 @@ module.exports = {
     logs: false,
     themes: ["light", "luxury"],
   },
-  // mode: "jit",
-  plugins: [require("daisyui")],
+  mode: "jit",
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
   theme: {
     extend: {},
   },

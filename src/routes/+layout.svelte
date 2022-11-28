@@ -1,15 +1,13 @@
 <script type="ts">
   import "../app.css";
-  import { Navbar, Sidebar } from "$lib/components";
+  import { Navbar, Drawer as NavbarDrawer } from "$lib/components/Navbar";
 
   let bottomNavbarEnabled = false;
 </script>
 
 <div class="drawer-mobile drawer">
-  <input id="sidebar" type="checkbox" class="drawer-toggle" />
+  <input id="navbar-drawer" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content flex flex-col items-center justify-center">
-    <!-- Page content here -->
-
     {#if !bottomNavbarEnabled}
       <Navbar />
     {/if}
@@ -21,5 +19,5 @@
     {/if}
   </div>
 
-  <Sidebar />
+  <NavbarDrawer />
 </div>
