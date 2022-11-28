@@ -1,14 +1,23 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { fly } from "svelte/transition";
+
   import Fa from "svelte-fa/src/fa.svelte";
   import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons/index.js";
 
-  let lightModeEnabled = localStorage.getItem("darkModeEnabled") === "1" ? false : true;
+  import { tooltip } from "$lib/helpers.js";
 
-  // set theme on initial load
-  if (localStorage.getItem("darkModeEnabled") === "1") {
-    document!.querySelector("html")!.dataset.theme = "luxury";
-  }
+  // elements
+  let lightModeEnabled: boolean;
+
+  onMount(() => {
+    // set initial theme
+    lightModeEnabled = localStorage.getItem("darkModeEnabled") === "1" ? false : true;
+
+    if (localStorage.getItem("darkModeEnabled") === "1") {
+      document!.querySelector("html")!.dataset.theme = "luxury";
+    }
+  });
 
   function handleClick(this: HTMLElement) {
     lightModeEnabled = !lightModeEnabled;
@@ -43,8 +52,8 @@
   </div>
   <input
     type="checkbox"
-    class="toggle-warning toggle tooltip inline-block"
-    data-tip="Toggle Dark Mode"
+    class="toggle-warning toggle inline-block"
+    use:tooltip={"Toggle Dark Mode"}
     bind:checked={lightModeEnabled}
     on:click={handleClick}
   />

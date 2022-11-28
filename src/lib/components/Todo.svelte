@@ -1,5 +1,5 @@
 <script lang="ts">
-  let itemText: string = "";
+  let itemContent: string = "";
 
   type TodoItem = { id: number; text: string };
   let todos: Array<TodoItem> = [];
@@ -15,9 +15,9 @@
     const ids = todos.map((todo) => todo.id);
     const id = (!ids.length && 1) || ids.reduce((max = 0, num) => (num > max && num) || max) + 1;
 
-    todos = [...todos, { id, text: itemText }]; // add item to the list
+    todos = [...todos, { id, text: itemContent }]; // add item to the list
 
-    itemText = ""; // clear the input field
+    itemContent = ""; // clear the input field
   }
 </script>
 
@@ -28,7 +28,7 @@
       type="text"
       placeholder="To Do..."
       class="input-bordered input"
-      bind:value={itemText}
+      bind:value={itemContent}
       on:keypress={inputHandleKeypress}
     />
     <button class="btn-primary btn" on:click={itemCreate}>Create</button>
@@ -38,8 +38,8 @@
 <!-- todo list -->
 <section>
   <ul class="mt-10 text-center">
-    {#each todos as todo, index (todo.id)}
-      <li>{index + 1}: {todo.text}</li>
+    {#each todos as todo, i (todo.id)}
+      <li>{i + 1}: {todo.text}</li>
     {:else}
       <li>No items created...</li>
     {/each}

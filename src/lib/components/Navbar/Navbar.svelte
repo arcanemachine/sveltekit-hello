@@ -39,7 +39,7 @@
     </span>
 
     <!-- action menu -->
-    <div class="dropdown-end dropdown tooltip tooltip-left" data-tip="Action Menu">
+    <div class="dropdown-end dropdown">
       <label tabindex="0" class="btn-ghost btn-square btn m-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
