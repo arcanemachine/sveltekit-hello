@@ -12,4 +12,7 @@ module.exports = {
     es2017: true,
     node: true,
   },
+  settings: {
+    "svelte3/ignore-warnings": ({ code }) => code === "a11y-label-has-associated-control",
+  },
 };

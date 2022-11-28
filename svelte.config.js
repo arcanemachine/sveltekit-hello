@@ -11,6 +11,11 @@ const config = {
       postcss: true,
     }),
   ],
+  onwarn: (warning, handler) => {
+    if (warning.code === "a11y-label-has-associated-control") return;
+    if (warning.code === "a11y-no-noninteractive-tabindex") return;
+    handler(warning);
+  },
 };
 
 export default config;

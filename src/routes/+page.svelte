@@ -1,4 +1,7 @@
 <script>
+  import Todo from "$lib/components/Todo.svelte";
 </script>
 
-<section>hello</section>
+<section>
+  <Todo />
+</section>

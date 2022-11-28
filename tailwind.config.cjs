@@ -5,7 +5,7 @@ module.exports = {
     logs: false,
     themes: ["light", "luxury"],
   },
-  mode: "jit",
+  // mode: "jit",
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
   theme: {
     extend: {},

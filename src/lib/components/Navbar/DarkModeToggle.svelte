@@ -29,17 +29,22 @@
   <div class="flex-center mr-2 flex grid">
     {#if lightModeEnabled}
       <div class="item" in:fly={{ x: 30 }}>
-        <Fa icon={faSun} style="color: hsl(var(--wa))" />
+        <span aria-label="Light Mode Icon">
+          <Fa icon={faSun} style="color: hsl(var(--wa))" />
+        </span>
       </div>
     {:else}
       <div class="item" in:fly={{ x: 30 }}>
-        <Fa icon={faMoon} />
+        <span aria-label="Dark Mode Icon">
+          <Fa icon={faMoon} />
+        </span>
       </div>
     {/if}
   </div>
   <input
     type="checkbox"
-    class="toggle-warning toggle inline-block"
+    class="toggle-warning toggle tooltip inline-block"
+    data-tip="Toggle Dark Mode"
     bind:checked={lightModeEnabled}
     on:click={handleClick}
   />
