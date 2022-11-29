@@ -4,11 +4,13 @@ import "tippy.js/dist/tippy.css"; // optional for styling
 
 // tooltip
 export function tooltip(node: HTMLElement, text: string, options: object = {}) {
+  const defaultOptions = {
+    delay: [750, null],
+  };
+
   options = {
+    ...defaultOptions,
     content: text,
-    ...{
-      delay: [750, null], // defaults
-    },
     ...options,
   };
 

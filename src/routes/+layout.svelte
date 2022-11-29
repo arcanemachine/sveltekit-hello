@@ -1,10 +1,25 @@
-<script>
-  import Todo from "$lib/components/Todo.svelte";
+<script type="ts">
+  import "/src/css/app.css";
+  import { Navbar, Drawer as NavbarDrawer } from "$lib/components/Navbar";
+  import Toast from "$lib/components/Toast.svelte";
 
-  /** @type {import('./$types').PageData} */
-  let data;
+  let bottomNavbarEnabled = false;
 </script>
 
-<section>
-  <Todo category={data.slug} />
-</section>
+<div class="drawer-mobile drawer">
+  <input id="navbar-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content flex flex-col items-center justify-center">
+    {#if !bottomNavbarEnabled}
+      <Navbar />
+    {/if}
+    <main class="mt-6 flex h-screen">
+      <slot />
+    </main>
+    {#if bottomNavbarEnabled}
+      <Navbar />
+    {/if}
+  </div>
+
+  <NavbarDrawer />
+  <Toast />
+</div>

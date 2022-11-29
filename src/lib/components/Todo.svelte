@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { toast } from "@zerodevx/svelte-toast";
 
-  export let category: string;
+  export let category: string = "";
 
   type TodoItem = { id: number; text: string; category: string };
 
