@@ -1,10 +1,7 @@
 <script>
   import Todo from "$lib/components/Todo.svelte";
-
-  /** @type {import('./$types').PageData} */
-  let data;
 </script>
 
 <section>
-  <Todo category={data.slug} />
+  <Todo />
 </section>

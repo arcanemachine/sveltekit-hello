@@ -3,9 +3,9 @@
   import { fly } from "svelte/transition";
 
   import Fa from "svelte-fa/src/fa.svelte";
-  import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons/index.js";
+  import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 
-  import { tooltip } from "$lib/helpers.js";
+  import { tooltip } from "$lib/helpers";
 
   // elements
   let lightModeEnabled: boolean;

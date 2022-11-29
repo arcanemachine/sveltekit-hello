@@ -1,13 +1,13 @@
+// toast
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
 
-// tippy
-export function tooltip(node: HTMLElement, content: string, options: object = {}) {
+// tooltip
+export function tooltip(node: HTMLElement, text: string, options: object = {}) {
   options = {
-    content,
+    content: text,
     ...{
-      // default options
-      delay: [750, null],
+      delay: [750, null], // defaults
     },
     ...options,
   };
@@ -16,7 +16,7 @@ export function tooltip(node: HTMLElement, content: string, options: object = {}
 
   // hide when clicked
   tip.reference.addEventListener("click", () => {
-    tip.hide(); // this method is preferred over hideOnClick option because of better mobile support
+    tip.hide(); // prefer this instead of 'hideOnClick' option because of better mobile UX
   });
 
   return {
