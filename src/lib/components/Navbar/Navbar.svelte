@@ -40,7 +40,7 @@
     </span>
 
     <!-- action menu -->
-    <div class="dropdown-end dropdown" use:tooltip={"Action Menu"}>
+    <div class="dropdown-end dropdown" use:tooltip={{ content: "Action Menu", placement: "left" }}>
       <label tabindex="0" class="btn-ghost btn-square btn m-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"

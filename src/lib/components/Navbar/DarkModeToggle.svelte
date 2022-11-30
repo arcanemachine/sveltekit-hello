@@ -66,7 +66,7 @@
   <input
     type="checkbox"
     class="toggle-warning toggle inline-block"
-    use:tooltip={"Toggle Dark Mode"}
+    use:tooltip={{ content: "Toggle Dark Mode", placement: "left" }}
     bind:checked={lightModeToggled}
     on:click={darkModeToggle}
   />
