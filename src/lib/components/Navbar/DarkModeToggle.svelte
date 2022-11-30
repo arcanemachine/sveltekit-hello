@@ -7,36 +7,49 @@
 
   import { tooltip } from "$lib/helpers";
 
-  // elements
-  let lightModeEnabled: boolean;
+  let lightModeToggled: boolean;
+  let darkModePreference = window.matchMedia("(prefers-color-scheme: dark)");
 
   onMount(() => {
-    // set initial theme
-    lightModeEnabled = localStorage.getItem("darkModeEnabled") === "1" ? false : true;
+    const savedDarkModePreferenceExists = localStorage.getItem("darkMode") !== null;
 
-    if (localStorage.getItem("darkModeEnabled") === "1") {
-      document!.querySelector("html")!.dataset.theme = "luxury";
-    }
+    // get initial dark mode setting in order: saved setting, browser settings
+    if (savedDarkModePreferenceExists)
+      lightModeToggled = !Boolean(JSON.parse(localStorage.getItem("darkMode") || ""));
+    else lightModeToggled = !darkModePreference.matches; // use browser preference
+
+    lightModeToggled ? darkModeDisable(false) : darkModeEnable(false); // set initial theme
+
+    // watch for changes to dark mode preference
+    darkModePreference.addEventListener("change", (evt) => {
+      // only change if no preference has been assigned manually
+      if (!savedDarkModePreferenceExists) {
+        evt.matches ? darkModeEnable(false) : darkModeDisable(false);
+      }
+    });
   });
 
-  function handleClick(this: HTMLElement) {
-    lightModeEnabled = !lightModeEnabled;
+  function darkModeEnable(updateLocalStorage: boolean) {
+    lightModeToggled = false;
+    updateLocalStorage && localStorage.setItem("darkMode", "1"); // save data to localStorage
+    document!.querySelector("html")!.dataset.theme = "luxury"; // set the theme
+  }
 
-    if (window.localStorage.getItem("darkModeEnabled") !== "1") {
-      // enable dark mode
-      localStorage.setItem("darkModeEnabled", "1"); // save data to localStorage
-      document!.querySelector("html")!.dataset.theme = "luxury"; // set the theme
-    } else {
-      // disable dark mode
-      localStorage.removeItem("darkModeEnabled"); // save data to localStorage
-      document!.querySelector("html")!.dataset.theme = "emerald"; // set the theme
-    }
+  function darkModeDisable(updateLocalStorage: boolean) {
+    lightModeToggled = true;
+    updateLocalStorage && localStorage.setItem("darkMode", "0"); // save data to localStorage
+    document!.querySelector("html")!.removeAttribute("data-theme"); // remove theme data attribute
+  }
+
+  function darkModeToggle() {
+    if (lightModeToggled) darkModeEnable(true);
+    else darkModeDisable(true);
   }
 </script>
 
 <div class="flex">
   <div class="flex-center mr-2 flex grid">
-    {#if lightModeEnabled}
+    {#if lightModeToggled}
       <div class="item" in:fly={{ x: 30 }}>
         <span aria-label="Light Mode Icon">
           <Fa icon={faSun} style="color: hsl(var(--wa))" />
@@ -54,8 +67,8 @@
     type="checkbox"
     class="toggle-warning toggle inline-block"
     use:tooltip={"Toggle Dark Mode"}
-    bind:checked={lightModeEnabled}
-    on:click={handleClick}
+    bind:checked={lightModeToggled}
+    on:click={darkModeToggle}
   />
 </div>
 

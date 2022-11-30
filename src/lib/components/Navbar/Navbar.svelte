@@ -29,7 +29,7 @@
   <!-- title -->
   <div class="flex-1">
     <a href="/" aria-current="page" aria-label="Homepage" class="flex-0 btn-ghost btn px-2">
-      <div class="font-title inline-flex text-3xl normal-case text-primary">Todo List</div></a
+      <div class="font-title inline-flex text-2xl normal-case text-primary">Todo List</div></a
     >
   </div>
 

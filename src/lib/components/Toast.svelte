@@ -6,17 +6,9 @@
     intro: { y: 125 },
     theme: {
       "--toastBarHeight": 0,
+      "--toastWidth": "20rem",
     },
   };
 </script>
 
 <SvelteToast {options} />
-
-<style>
-  :root {
-    --toastContainerTop: auto;
-    --toastContainerRight: 1rem;
-    --toastContainerBottom: 1rem;
-    --toastContainerLeft: auto;
-  }
-</style>

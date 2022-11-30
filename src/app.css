@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.flex-center {
+  justify-content: center;
+  align-items: center;
+}
+
+.svelte-fa {
+  min-width: 16px;
+}
+
+/* daisyUI */
+.checkbox {
+  border-width: 2px;
+}

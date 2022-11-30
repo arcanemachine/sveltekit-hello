@@ -7,6 +7,8 @@ const config = {
     adapter: adapter(),
     alias: {
       $components: "src/lib/components",
+      $helpers: "src/lib/helpers",
+      $types: "src/lib/types",
     },
   },
   preprocess: [
@@ -19,6 +21,13 @@ const config = {
     if (warning.code === "a11y-no-noninteractive-tabindex") return;
     handler(warning);
   },
+  // vitePlugin: {
+  //   experimental: {
+  //     inspector: {
+  //       // toggleKeyCombo: "meta-shift",
+  //     },
+  //   },
+  // },
 };
 
 export default config;

@@ -1,0 +1,23 @@
+/* svelte-fa */
+.svelte-fa {
+  min-width: 16px;
+}
+
+/* daisyUI */
+.checkbox {
+  border-width: 2px !important;
+}
+
+/* svelte-toast */
+:root {
+  --toastContainerTop: auto;
+  --toastContainerRight: 1rem;
+  --toastContainerBottom: 1rem;
+  --toastContainerLeft: auto;
+}
+
+/* misc styles */
+.flex-center {
+  justify-content: center;
+  align-items: center;
+}

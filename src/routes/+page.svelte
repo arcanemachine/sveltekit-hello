@@ -1,5 +1,5 @@
 <script>
-  import Todo from "$lib/components/Todo.svelte";
+  import Todo from "$components/Todo/Todo.svelte";
 </script>
 
 <section>

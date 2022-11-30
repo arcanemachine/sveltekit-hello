@@ -12,7 +12,7 @@
     {#if !bottomNavbarEnabled}
       <Navbar />
     {/if}
-    <main class="mt-6 flex h-screen">
+    <main class="mt-2 flex h-screen">
       <slot />
     </main>
     {#if bottomNavbarEnabled}
