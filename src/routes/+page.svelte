@@ -1,7 +1,7 @@
 <script>
-  import Todo from "$components/Todo/Todo.svelte";
+  import TodoItemList from "$components/Todo/TodoItemList.svelte";
 </script>
 
 <section>
-  <Todo />
+  <TodoItemList />
 </section>

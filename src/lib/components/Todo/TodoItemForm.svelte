@@ -1,9 +1,8 @@
 <script lang="ts">
   import { toast } from "@zerodevx/svelte-toast";
 
-  import { savedTodoItemsUpdate } from "$helpers";
-  import { todoItems, todoItemIdSelected, todoFormInputText } from "$stores";
-  import type { TodoItem } from "$types";
+  import type { TodosCreateRequest } from "$lib/api-client";
+  import { todoItems, todoItemIdSelected, todoFormInputText, todosApi } from "$stores";
 
   // computed
   $: todoFormInputTextIsEmpty = !$todoFormInputText;
@@ -12,37 +11,34 @@
   function inputHandleKeypress(evt: KeyboardEvent) {
     if (evt.key === "Enter") {
       if ($todoItemIdSelected) {
-        itemUpdate();
+        itemUpdateContent();
       } else {
         itemCreate();
       }
     }
   }
 
-  function itemCreate() {
+  async function itemCreate() {
     if (!$todoFormInputText) return; // if text input field is blank, don't do anything
 
-    // generate new item ID (return 1 or max + 1)
-    const ids = $todoItems.map((todoItem: TodoItem) => todoItem.id);
-    const id =
-      (!ids.length && 1) || ids.reduce((max = 0, num: number) => (num > max && num) || max) + 1;
-
-    // add item to the list
-    todoItems.update((todoItems) => [
-      ...todoItems,
-      {
-        id,
+    const params: TodosCreateRequest = {
+      todo: {
+        id: 0,
         content: $todoFormInputText,
         isCompleted: false,
       },
-    ]);
+    };
+
+    const todo = await $todosApi.todosCreate(params);
+
+    // add item to the list
+    $todoItems = [...$todoItems, todo];
 
     $todoFormInputText = ""; // clear the input field
     toast.push("Item created", { classes: ["bg-success"] }); // show successful toast message
-    savedTodoItemsUpdate($todoItems); // update saved todos
   }
 
-  function itemUpdate() {
+  function itemUpdateContent() {
     const todo = $todoItems.filter((todoItem) => todoItem.id === $todoItemIdSelected)[0];
     todo.content = $todoFormInputText; // update item
     $todoItems = $todoItems; // force re-render
@@ -50,7 +46,6 @@
     $todoFormInputText = ""; // clear the input field
     $todoItemIdSelected = 0; // reset current item
     toast.push("Item updated", { classes: ["bg-success"] }); // show successful toast message
-    savedTodoItemsUpdate($todoItems); // update saved todos
   }
 </script>
 
@@ -71,7 +66,7 @@
       <button
         class="btn-primary btn-accent btn"
         disabled={todoFormInputTextIsEmpty}
-        on:click={itemUpdate}>Update</button
+        on:click={itemUpdateContent}>Update</button
       >
     {/if}
   </div>

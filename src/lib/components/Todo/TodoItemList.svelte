@@ -5,16 +5,21 @@
   import { faX } from "@fortawesome/free-solid-svg-icons";
 
   import { TodoItemDelete, TodoItemForm } from ".";
-  import { savedTodoItemsUpdate, tooltip } from "$helpers";
-  import { todoItems, todoFormInputText, todoItemIdSelected } from "$stores";
+  import { tooltip } from "$helpers";
+  import { Configuration, TodosApi } from "$lib/api-client";
+  import { todoItems, todoFormInputText, todoItemIdSelected, todosApi } from "$stores";
 
   let todoItemDeleteModalVisible = false;
 
   // lifecycle
-  onMount(() => {
-    if (localStorage.getItem("todoItems")) {
-      $todoItems = JSON.parse(localStorage.getItem("todoItems") || "[]");
-    }
+  onMount(async () => {
+    $todosApi = new TodosApi(
+      new Configuration({
+        basePath: "http://localhost:8000",
+      })
+    );
+
+    $todoItems = await $todosApi.todosList();
   });
 
   function todoItemHandleClick(todoItemId: number) {
@@ -27,6 +32,15 @@
       $todoItemIdSelected = 0;
       $todoFormInputText = "";
     }
+  }
+
+  function todoItemUpdateIsCompleted(todoItemId: number) {
+    const todo = $todoItems.filter((todoItem) => todoItem.id === todoItemId)[0];
+    todo.content = $todoFormInputText; // update item
+    $todoItems = $todoItems; // force re-render
+
+    $todoFormInputText = ""; // clear the input field
+    $todoItemIdSelected = 0; // reset current item
   }
 </script>
 
@@ -65,7 +79,10 @@
               type="checkbox"
               bind:checked={todoItem.isCompleted}
               class="checkbox"
-              on:click={() => setTimeout(() => savedTodoItemsUpdate($todoItems))}
+              on:click={() =>
+                setTimeout(() => {
+                  todoItemUpdateIsCompleted(todoItem.id);
+                })}
             />
           </label>
         {/if}
