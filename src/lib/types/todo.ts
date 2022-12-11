@@ -1,2 +1,5 @@
-export type TodoCategory = { id: number; name: string };
-export type TodoItem = { id: number; content: string; category: number | null; completed: boolean };
+export type TodoItem = {
+  id: number;
+  content: string;
+  isCompleted: boolean;
+};

@@ -1,5 +1,4 @@
 export { default as Todo } from "$components/Todo/Todo.svelte";
-export { default as TodoCategoryCreate } from "$components/Todo/TodoCategoryCreate.svelte";
-export { default as TodoCategoryList } from "$components/Todo/TodoCategoryList.svelte";
-export { default as TodoItemCreate } from "$components/Todo/TodoItemCreate.svelte";
+export { default as TodoItemDelete } from "$components/Todo/TodoItemDelete.svelte";
+export { default as TodoItemForm } from "$components/Todo/TodoItemForm.svelte";
 export { default as TodoItemList } from "$components/Todo/TodoItemList.svelte";

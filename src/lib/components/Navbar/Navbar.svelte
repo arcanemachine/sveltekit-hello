@@ -6,7 +6,7 @@
 <div style="height: 1px;">&nbsp;</div>
 
 <nav class="navbar border-b-2 transition-colors duration-300">
-  <!-- drawer -->
+  <!-- drawer
   <div class="tooltip tooltip-bottom tooltip-right flex-none lg:hidden" data-tip="Show Categories">
     <input id="navbar-drawer" type="checkbox" class="drawer-toggle" />
     <label for="navbar-drawer" class="btn-ghost btn-square btn">
@@ -24,6 +24,7 @@
       >
     </label>
   </div>
+   -->
 
   <!-- title -->
   <div class="flex-1">

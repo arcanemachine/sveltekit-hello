@@ -40,6 +40,7 @@ export function tooltip(node: HTMLElement, options: Record<string, any> | string
   const defaultOptions = {
     delay: [750, null],
     hideOnClick: true,
+    // interactiveDebounce: 150,
     touch: "hold",
   };
 

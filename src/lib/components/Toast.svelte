@@ -1,5 +1,5 @@
 <script>
-  import { SvelteToast, toast } from "@zerodevx/svelte-toast";
+  import { SvelteToast } from "@zerodevx/svelte-toast";
 
   const options = {
     reversed: true,

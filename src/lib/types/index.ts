@@ -1,1 +1,1 @@
-export type { TodoCategory, TodoItem } from "./todo.js";
+export type { TodoItem } from "./todo.js";
