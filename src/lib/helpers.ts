@@ -2,6 +2,14 @@ import { toast } from "@zerodevx/svelte-toast";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
 
+import type { TodoItem } from "$types";
+
+// storage
+export function savedTodoItemsUpdate(todoItems: Array<TodoItem>) {
+  localStorage.setItem("todoItems", JSON.stringify(todoItems));
+  console.log("Saved items have been updated");
+}
+
 // toast
 export function toastCreate(message: string, theme: string = "") {
   let toastTheme: object = {};

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { toast } from "@zerodevx/svelte-toast";
 
+  import { savedTodoItemsUpdate } from "$helpers";
   import { todoItems, todoItemIdSelected, todoFormInputText } from "$stores";
   import type { TodoItem } from "$types";
 
@@ -38,6 +39,7 @@
 
     $todoFormInputText = ""; // clear the input field
     toast.push("Item created", { classes: ["bg-success"] }); // show successful toast message
+    savedTodoItemsUpdate($todoItems); // update saved todos
   }
 
   function itemUpdate() {
@@ -48,6 +50,7 @@
     $todoFormInputText = ""; // clear the input field
     $todoItemIdSelected = 0; // reset current item
     toast.push("Item updated", { classes: ["bg-success"] }); // show successful toast message
+    savedTodoItemsUpdate($todoItems); // update saved todos
   }
 </script>
 

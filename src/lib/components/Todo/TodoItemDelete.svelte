@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import { toast } from "@zerodevx/svelte-toast";
 
+  import { savedTodoItemsUpdate } from "$helpers";
   import { todoItems, todoItemIdSelected } from "$stores";
 
   // props
@@ -31,6 +32,7 @@
 
     $todoItemIdSelected = 0; // reset current item
     toast.push("Item deleted", { classes: ["bg-success"] }); // show successful toast message
+    savedTodoItemsUpdate($todoItems); // update saved todos
     modalClose();
   }
 

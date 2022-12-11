@@ -5,7 +5,7 @@
   import { faX } from "@fortawesome/free-solid-svg-icons";
 
   import { TodoItemDelete, TodoItemForm } from ".";
-  import { tooltip } from "$helpers";
+  import { savedTodoItemsUpdate, tooltip } from "$helpers";
   import { todoItems, todoFormInputText, todoItemIdSelected } from "$stores";
 
   let todoItemDeleteModalVisible = false;
@@ -61,7 +61,12 @@
           </label>
         {:else}
           <label class="label" use:tooltip={"Mark completed"}>
-            <input type="checkbox" bind:checked={todoItem.isCompleted} class="checkbox" />
+            <input
+              type="checkbox"
+              bind:checked={todoItem.isCompleted}
+              class="checkbox"
+              on:click={() => setTimeout(() => savedTodoItemsUpdate($todoItems))}
+            />
           </label>
         {/if}
       </div>
