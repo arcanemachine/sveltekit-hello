@@ -5,7 +5,7 @@
 <!-- spacer -->
 <div style="height: 1px;">&nbsp;</div>
 
-<nav class="navbar border-b-2 transition-colors duration-300">
+<nav class="navbar border-y-2 transition-colors duration-300">
   <!-- drawer
   <div class="tooltip tooltip-bottom tooltip-right flex-none lg:hidden" data-tip="Show Categories">
     <input id="navbar-drawer" type="checkbox" class="drawer-toggle" />

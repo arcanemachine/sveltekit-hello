@@ -2,8 +2,6 @@ import { toast } from "@zerodevx/svelte-toast";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
 
-import type { Todo } from "$lib/api-client";
-
 // toast
 export function toastCreate(message: string, theme: string = "") {
   let toastTheme: object = {};

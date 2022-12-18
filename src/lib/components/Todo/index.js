@@ -1,3 +1,3 @@
-export { default as TodoItemDelete } from "$components/Todo/TodoItemDelete.svelte";
-export { default as TodoItemForm } from "$components/Todo/TodoItemForm.svelte";
-export { default as TodoItemList } from "$components/Todo/TodoItemList.svelte";
+export { default as TodoDelete } from "$components/Todo/TodoDelete.svelte";
+export { default as TodoForm } from "$components/Todo/TodoForm.svelte";
+export { default as TodoList } from "$components/Todo/TodoList.svelte";
