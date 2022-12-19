@@ -1,4 +1,5 @@
 # misc
+.cert/
 *.tmp
 
 # environment

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { toast } from "@zerodevx/svelte-toast";
 
-  import type { TodosCreateRequest, TodosPartialUpdateRequest } from "$lib/api-client";
+  import type { TodosCreateRequest, TodosPartialUpdateRequest } from "$lib/openapi";
   import { todos, todoIdSelected, todoFormInputText, todosApi } from "$stores";
 
   // computed

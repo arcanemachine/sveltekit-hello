@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import { toast } from "@zerodevx/svelte-toast";
 
-  import type { Todo, TodosDestroyRequest } from "$lib/api-client";
+  import type { Todo, TodosDestroyRequest } from "$lib/openapi";
   import { todos, todoIdSelected, todosApi } from "$stores";
 
   // props

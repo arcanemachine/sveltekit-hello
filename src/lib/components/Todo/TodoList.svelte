@@ -7,8 +7,8 @@
 
   import { TodoDelete, TodoForm } from ".";
   import { tooltip } from "$helpers";
-  import type { TodosPartialUpdateRequest } from "$lib/api-client";
-  import { Configuration, TodosApi } from "$lib/api-client";
+  import type { TodosPartialUpdateRequest } from "$lib/openapi";
+  import { Configuration, TodosApi } from "$lib/openapi";
   import { todos, todoFormInputText, todoIdSelected, todosApi } from "$stores";
 
   let todoDeleteModalVisible = false;

@@ -1,15 +1,9 @@
-<script>
-  import TodoList from "$components/Todo/TodoList.svelte";
-  import { user } from "$stores";
-
-  console.log($user);
-</script>
-
-<section>
-  <!-- @ts-ignore -->
-  {#if $user.pk !== null}
-    <TodoList />
-  {:else}
-    <section class="h-full">You must login or register before you can create any todos.</section>
-  {/if}
+<section class="flex-center prose flex h-full flex-col">
+  <h3>Welcome to the Todo List API Client!</h3>
+  <p class="italic">Powered by SvelteKit</p>
+  <div class="action-links">
+    <h3>
+      <a href="/todo">View your Todos</a>
+    </h3>
+  </div>
 </section>

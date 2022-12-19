@@ -1,5 +1,9 @@
 <script type="ts">
+  import Fa from "svelte-fa/src/fa.svelte";
+  import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
+
   import { DarkModeToggle } from ".";
+  import { userDetails, userPrefs } from "$stores";
 </script>
 
 <!-- spacer -->
@@ -40,24 +44,18 @@
     </span>
 
     <!-- action menu -->
-    <div class="dropdown-end dropdown">
+    <div class="dropdown-end dropdown {$userPrefs.bottomNavbarEnabled && 'dropdown-top'}">
       <label tabindex="0" class="btn-ghost btn-square btn m-1">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          class="inline-block h-5 w-5 stroke-current"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-          /></svg
-        >
+        <Fa icon={faCircleUser} size="lg" />
       </label>
       <ul class="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow">
-        <li><btn tabindex="0">Item 1</btn></li>
-        <li><btn tabindex="0">Item 2</btn></li>
+        {#if !$userDetails.username}
+          <li><a href="/user/login">Login</a></li>
+          <li><a href="/user/register">Register</a></li>
+        {:else}
+          <li><a href="/user">Register</a></li>
+          <li><a href="/user/logout">Register</a></li>
+        {/if}
       </ul>
     </div>
   </div>
