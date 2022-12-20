@@ -2,7 +2,7 @@
   import "/src/css/app.css";
   import { Navbar, NavbarDrawer } from "$components/base/navbar";
   import { Toast } from "$components/base/toast";
-  import { userPrefs } from "$stores";
+  import { userDetails, userPrefs } from "$stores";
 </script>
 
 <div class="drawer-mobile drawer">
@@ -13,6 +13,7 @@
     {/if}
     <main class="mt-6 h-full">
       <slot />
+      {$userDetails.username || "Not logged in"}
     </main>
     {#if $userPrefs.bottomNavbarEnabled}
       <Navbar />

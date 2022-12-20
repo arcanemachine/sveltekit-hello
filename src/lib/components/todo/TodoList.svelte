@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-
   import Fa from "svelte-fa/src/fa.svelte";
   import { faX } from "@fortawesome/free-solid-svg-icons";
+  import { onMount } from "svelte";
   import { toast } from "@zerodevx/svelte-toast";
 
   import { TodoDelete, TodoForm } from "$components/todo";
