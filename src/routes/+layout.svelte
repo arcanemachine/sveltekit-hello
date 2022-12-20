@@ -1,7 +1,7 @@
 <script type="ts">
   import "/src/css/app.css";
-  import { Navbar, Drawer as NavbarDrawer } from "$lib/components/Navbar";
-  import Toast from "$lib/components/Toast.svelte";
+  import { Navbar, NavbarDrawer } from "$components/base/navbar";
+  import { Toast } from "$components/base/toast";
   import { userPrefs } from "$stores";
 </script>
 

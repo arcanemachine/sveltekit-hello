@@ -1,5 +1,5 @@
 <script>
-  import TodoList from "$components/Todo/TodoList.svelte";
+  import { TodoList } from "$components/todo";
   import { userDetails } from "$stores";
 </script>
 

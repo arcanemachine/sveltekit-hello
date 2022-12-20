@@ -5,8 +5,8 @@ import fs from "fs";
 const config = {
   server: {
     https: {
-      key: fs.readFileSync("./.cert/ca.key"),
-      cert: fs.readFileSync("./.cert/ca.crt"),
+      key: fs.readFileSync("./.cert/key.pem"),
+      cert: fs.readFileSync("./.cert/cert.pem"),
     },
   },
   plugins: [sveltekit()],

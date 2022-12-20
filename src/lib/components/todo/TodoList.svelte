@@ -5,11 +5,11 @@
   import { faX } from "@fortawesome/free-solid-svg-icons";
   import { toast } from "@zerodevx/svelte-toast";
 
-  import { TodoDelete, TodoForm } from ".";
-  import { tooltip } from "$helpers";
+  import { TodoDelete, TodoForm } from "$components/todo";
+  import { toastCreate, tooltip } from "$helpers";
   import type { TodosPartialUpdateRequest } from "$lib/openapi";
   import { Configuration, TodosApi } from "$lib/openapi";
-  import { todos, todoFormInputText, todoIdSelected, todosApi } from "$stores";
+  import { apiHost, todos, todoFormInputText, todoIdSelected, todosApi } from "$stores";
 
   let todoDeleteModalVisible = false;
 
@@ -17,11 +17,15 @@
   onMount(async () => {
     $todosApi = new TodosApi(
       new Configuration({
-        basePath: "http://localhost:8000",
+        basePath: $apiHost,
       })
     );
 
-    $todos = await $todosApi.todosList();
+    try {
+      $todos = await $todosApi.todosList();
+    } catch {
+      toastCreate("Could not fetch todos from server.", "error");
+    }
   });
 
   function todoHandleClick(todoId: number) {

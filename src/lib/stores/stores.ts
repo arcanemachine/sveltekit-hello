@@ -3,6 +3,9 @@ import { writable } from "svelte/store";
 
 import type { Todo, TodosApi } from "$lib/openapi";
 
+// API
+export const apiHost: Writable<string> = writable("https://api.tower.test:8000");
+
 // auth
 type User = {
   username: string;
