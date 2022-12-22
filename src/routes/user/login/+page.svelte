@@ -7,19 +7,18 @@
 
   import { CsrfEnsure } from "$components/base";
   import type { AuthLoginCreateRequest, ResponseError } from "$lib/openapi";
-  import { Configuration, AuthApi } from "$lib/openapi";
-  import { apiHost, user } from "$stores";
+  // import { Configuration, AuthApi } from "$lib/openapi";
+  import { apiStore, user } from "$stores";
   import { toastCreateOnError, toastCreate } from "$helpers";
 
-  let authApi: AuthApi;
+  // let authApi: AuthApi;
 
   // lifecycle
   onMount(async () => {
-    authApi = new AuthApi(
-      new Configuration({
-        basePath: apiHost,
-      })
-    );
+    if ($user.username) {
+      toastCreate("You are already logged in.", "error");
+      goto("/");
+    }
   });
 
   // form
@@ -33,16 +32,8 @@
         },
       };
 
-      const deleteme = {
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": document.cookie.split("=")[1],
-        },
-        // body: `csrfmiddlewaretoken=${$csrfmiddlewaretoken}`,
-      };
-
-      authApi
-        .authLoginCreate(params, deleteme)
+      $apiStore.apis.auth
+        .authLoginCreate(params, $apiStore.overrides as RequestInit)
         .then(() => {
           $user.username = values.username; // save username to user store
           localStorage.setItem("username", values.username); // save username to localStorage

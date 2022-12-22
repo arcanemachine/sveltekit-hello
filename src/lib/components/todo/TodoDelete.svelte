@@ -1,12 +1,16 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { toast } from "@zerodevx/svelte-toast";
 
+  import { toastCreate, toastCreateOnError } from "$helpers";
   import type { Todo, TodosDestroyRequest } from "$lib/openapi";
-  import { todos, todoIdSelected, todosApi } from "$stores";
+  import { apiStore, todos } from "$stores";
 
   // props
-  export let modalVisible: boolean = false;
+  export let modalVisible: boolean;
+  export let todoFormInputText: string;
+  export let todoIdSelected: number;
+
+  $: todosApi = $apiStore.apis.todos; // computed
 
   // functions
   function handleKeydown(evt: KeyboardEvent) {
@@ -29,24 +33,26 @@
 
   function todoDelete() {
     const params: TodosDestroyRequest = {
-      id: $todoIdSelected,
+      id: todoIdSelected,
     };
-    $todosApi
-      .todosDestroyRaw(params)
+
+    todosApi
+      .todosDestroyRaw(params, $apiStore.overrides)
       .then((res) => {
         if (res.raw.ok && res.raw.status === 204) {
           // delete locally
-          $todos = $todos.filter((todo: Todo) => todo.id !== $todoIdSelected);
+          $todos = $todos.filter((todo: Todo) => todo.id !== todoIdSelected);
 
-          $todoIdSelected = 0; // reset current item
-          toast.push("Todo deleted", { classes: ["bg-success"] }); // show successful toast message
+          todoFormInputText = ""; // reset form input text
+          todoIdSelected = 0; // reset selected item
+          toastCreate("Todo deleted successfully", "success"); // success message
           modalClose();
         } else {
-          toast.push(`Error ${res.raw.status}: ${res.raw.statusText}`, { classes: ["bg-error"] });
+          toastCreate(`Error ${res.raw.status}: ${res.raw.statusText}`, "error"); // error message
         }
       })
       .catch((err) => {
-        toast.push(`${err}`, { classes: ["bg-error"] });
+        toastCreateOnError(err);
       });
   }
 
@@ -64,7 +70,7 @@
         for="todo-delete-modal"
         class="btn-secondary btn-sm btn-circle btn absolute right-3 top-3">✕</label
       >
-      <h3 class="text-center text-lg font-bold">Delete This Todo?</h3>
+      <h3 class="text-center text-lg font-bold">Delete this Todo?</h3>
       <div class="flex-center mx-auto mt-6 flex">
         <button class="btn-secondary btn mx-2" on:click={modalClose}>No</button>
         <button class="btn-primary btn mx-2" on:click={todoDelete}>Yes</button>

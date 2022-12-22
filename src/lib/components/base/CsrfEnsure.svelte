@@ -1,12 +1,12 @@
 <script>
   import { onMount } from "svelte";
 
-  import { csrfmiddlewaretoken } from "$stores";
-  import { csrfmiddlewaretokenGet } from "$helpers";
+  import { csrfToken } from "$stores";
+  import { csrfTokenGet } from "$helpers";
 
   onMount(async () => {
-    if (!$csrfmiddlewaretoken) {
-      $csrfmiddlewaretoken = await csrfmiddlewaretokenGet();
+    if (!$csrfToken) {
+      $csrfToken = await csrfTokenGet();
     }
   });
 </script>

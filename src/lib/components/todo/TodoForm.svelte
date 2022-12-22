@@ -1,16 +1,18 @@
 <script lang="ts">
-  import { toast } from "@zerodevx/svelte-toast";
-
+  import { toastCreate } from "$helpers";
   import type { TodosCreateRequest, TodosPartialUpdateRequest } from "$lib/openapi";
-  import { todos, todoIdSelected, todoFormInputText, todosApi } from "$stores";
+  import { apiStore, todos } from "$stores";
 
-  // computed
-  $: todoFormInputTextIsEmpty = !$todoFormInputText;
+  // props
+  export let todoFormInputText: string;
+  export let todoIdSelected: number;
 
-  // functions
+  $: todosApi = $apiStore.apis.todos; // computed
+
+  // methods
   function inputHandleKeypress(evt: KeyboardEvent) {
     if (evt.key === "Enter") {
-      if ($todoIdSelected) {
+      if (todoIdSelected) {
         todoUpdateContent();
       } else {
         todoCreate();
@@ -19,42 +21,42 @@
   }
 
   async function todoCreate() {
-    if (!$todoFormInputText) return; // if text input field is blank, don't do anything
+    if (!todoFormInputText) return; // if text input field is blank, don't do anything
 
     const params: TodosCreateRequest = {
       todo: {
         id: 0,
-        content: $todoFormInputText,
+        content: todoFormInputText,
         isCompleted: false,
       },
     };
 
-    const todo = await $todosApi.todosCreate(params);
+    const todo = await $apiStore.apis.todos.todosCreate(params, $apiStore.overrides);
 
     // add item to the list
     $todos = [...$todos, todo];
 
-    $todoFormInputText = ""; // clear the input field
-    toast.push("Todo created", { classes: ["bg-success"] }); // show successful toast message
+    todoFormInputText = ""; // clear the input field
+    toastCreate("Todo created successfully", "success"); // show successful toast message
   }
 
   async function todoUpdateContent() {
     const params: TodosPartialUpdateRequest = {
-      id: $todoIdSelected,
+      id: todoIdSelected,
       patchedTodo: {
-        content: $todoFormInputText,
+        content: todoFormInputText,
       },
     };
 
-    await $todosApi.todosPartialUpdate(params);
+    await todosApi.todosPartialUpdate(params, $apiStore.overrides);
 
-    const todoIndex = $todos.indexOf($todos.filter((todo) => todo.id === $todoIdSelected)[0]);
-    $todos[todoIndex].content = $todoFormInputText; // update item
+    const todoIndex = $todos.indexOf($todos.filter((todo) => todo.id === todoIdSelected)[0]);
+    $todos[todoIndex].content = todoFormInputText; // update item
     $todos = $todos; // force re-render
 
-    $todoFormInputText = ""; // clear the input field
-    $todoIdSelected = 0; // reset current item
-    toast.push("Todo updated", { classes: ["bg-success"] }); // show successful toast message
+    todoFormInputText = ""; // clear the input field
+    todoIdSelected = 0; // reset current item
+    toastCreate("Todo updated successfully", "success"); // show successful toast message
   }
 </script>
 
@@ -64,17 +66,17 @@
       type="text"
       placeholder="To Do..."
       class="input-bordered input focus:outline-0"
-      bind:value={$todoFormInputText}
+      bind:value={todoFormInputText}
       on:keypress={inputHandleKeypress}
     />
-    {#if !$todoIdSelected}
-      <button class="btn-primary btn" disabled={todoFormInputTextIsEmpty} on:click={todoCreate}
+    {#if !todoIdSelected}
+      <button class="btn-primary btn" disabled={!todoFormInputText} on:click={todoCreate}
         >Create</button
       >
     {:else}
       <button
         class="btn-primary btn-accent btn"
-        disabled={todoFormInputTextIsEmpty}
+        disabled={!todoFormInputText}
         on:click={todoUpdateContent}>Update</button
       >
     {/if}

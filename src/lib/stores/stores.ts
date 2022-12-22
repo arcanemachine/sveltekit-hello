@@ -3,6 +3,7 @@ import { writable } from "svelte/store";
 import Cookies from "js-cookie";
 
 import { Configuration, type Todo, TodosApi, AuthApi } from "$lib/openapi";
+// import { csrfTokenGet } from "$helpers";
 
 // API
 type ApiUrls = {
@@ -10,89 +11,77 @@ type ApiUrls = {
   utils: string;
 };
 
-const apiHost = `{location.protocol}//{location.host}`;
+type ApiApis = {
+  todos: TodosApi;
+  auth: AuthApi;
+};
+
+type ApiData = {
+  host: string;
+  apis: ApiApis;
+  overrides: RequestInit;
+  urls: ApiUrls;
+};
+
+const apiHost = `${location.protocol}//${location.host}`;
 
 export const apiUrls: ApiUrls = {
   root: `${apiHost}/api`,
   utils: `${apiHost}/api/utils`,
 };
 
-const apiData = () => {
-  type ApiApis = {
-    todos: TodosApi;
-    users: AuthApi;
-  };
+export const apiStore: Writable<ApiData> = writable({
+  host: apiHost,
+  apis: {
+    todos: new TodosApi(
+      new Configuration({
+        basePath: apiHost,
+      })
+    ),
+    auth: new AuthApi(
+      new Configuration({
+        basePath: apiHost,
+      })
+    ),
+  },
+  get overrides() {
+    const csrfToken = Cookies.get("csrftoken");
 
-  type ApiOverrides = {
-    headers: object;
-  };
-
-  type ApiData = {
-    host: string;
-    apis: ApiApis;
-    overrides: ApiOverrides;
-    urls: ApiUrls;
-  };
-
-  const apiData: ApiData = {
-    host: apiHost,
-    apis: {
-      todos: new TodosApi(
-        new Configuration({
-          basePath: apiHost,
-        })
-      ),
-      users: new AuthApi(
-        new Configuration({
-          basePath: apiHost,
-        })
-      ),
-    },
-    overrides: {
+    return {
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": () => Cookies.get("csrftoken"),
+        "X-CSRFToken": csrfToken,
       },
-    },
-    urls: apiUrls,
-  };
+    } as RequestInit;
+  },
+  urls: apiUrls,
+});
 
-  return apiData;
-};
+// TODO: rewrite with fetch-based get and set methods
+// export const csrfToken: Writable<string> = (() => {
+//   const { subscribe, set, update } = writable("");
+//
+//   return {
+//     subscribe,
+//     set,
+//     update,
+//     // fetch: async () => {
+//     //   return await fetch(`${apiUrls.utils}/csrf/get`, {
+//     //     credentials: "include",
+//     //   })
+//     //     .then((res) => res.json())
+//     //     .then((data) => data.csrfToken);
+//     // },
+//   };
+// })();
 
-export const api: Writable<object> = writable(apiData());
-
-export const apiRequestHeaders = {
-  "Content-Type": "application/json",
-  "X-CSRFToken": document.cookie.split("=")[1],
-};
-
-export const csrfmiddlewaretoken: Writable<string> = (() => {
-  const { subscribe, set, update } = writable("");
-
-  return {
-    subscribe,
-    set,
-    update,
-    fetch: (csrfmiddlewaretoken: string) => {
-      fetch(`${apiUrls.utils}/csrf/get`, {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          csrfmiddlewaretoken = data.csrfmiddlewaretoken;
-        });
-
-      return csrfmiddlewaretoken;
-    },
-  };
-})();
+export const csrfToken: Writable<string> = writable("");
 
 // todos
-export const todosApi: Writable<TodosApi> = writable();
+// export const todosApi: Writable<TodosApi> = writable();
 export const todos: Writable<Array<Todo>> = writable([]);
-export const todoIdSelected: Writable<number> = writable(0);
-export const todoFormInputText: Writable<string> = writable("");
+// export const todoIdSelected: Writable<number> = writable(0);
+// export const todoFormInputText: Writable<string> = writable("");
 
 // user
 type User = {

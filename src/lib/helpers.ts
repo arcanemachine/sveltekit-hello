@@ -7,25 +7,22 @@ import type { ResponseError } from "./openapi";
 import { apiUrls } from "$stores";
 
 // API
-export async function csrfmiddlewaretokenCheck(
-  csrfmiddlewaretoken: string,
-  method: string = "POST"
-) {
+export async function csrfTokenCheck(csrfToken: string, method: string = "POST") {
   return await fetch(`${apiUrls.utils}/csrf/check`, {
     method: method,
-    headers: method === "POST" ? { "X-CSRFToken": csrfmiddlewaretoken } : {},
+    headers: method === "POST" ? { "X-CSRFToken": csrfToken } : {},
     credentials: "include",
   })
     .then((res) => res.json())
     .then((data) => data.message);
 }
 
-export async function csrfmiddlewaretokenGet() {
+export async function csrfTokenGet() {
   return await fetch(`${apiUrls.utils}/csrf/get`, {
     credentials: "include",
   })
     .then((res) => res.json())
-    .then((data) => data.csrfmiddlewaretoken);
+    .then((data) => data.csrfToken);
 }
 
 // toast

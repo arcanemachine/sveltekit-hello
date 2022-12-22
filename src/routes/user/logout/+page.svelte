@@ -7,11 +7,11 @@
 
   import { CsrfEnsure } from "$components/base";
   import type { ResponseError } from "$lib/openapi";
-  import { Configuration, AuthApi } from "$lib/openapi";
-  import { apiHost, user } from "$stores";
+  // import { Configuration, AuthApi } from "$lib/openapi";
+  import { apiStore, user } from "$stores";
   import { toastCreateOnError, toastCreate } from "$helpers";
 
-  let authApi: AuthApi;
+  // let authApi: AuthApi;
 
   // lifecycle
   onMount(async () => {
@@ -19,20 +19,14 @@
       toastCreate("You are already logged out.", "error");
       goto("/");
     }
-
-    authApi = new AuthApi(
-      new Configuration({
-        basePath: apiHost,
-      })
-    );
   });
 
   // form
   const { form } = createForm({
     extend: reporter(),
-    onSubmit: async (values) => {
-      authApi
-        .authLogoutCreate()
+    onSubmit: (values) => {
+      $apiStore.apis.auth
+        .authLogoutCreate($apiStore.overrides as RequestInit)
         .then(() => {
           $user.username = values.username; // reset username in user store
           localStorage.removeItem("username"); // remove username from localStorage
