@@ -1,7 +1,32 @@
 import { toast } from "@zerodevx/svelte-toast";
+
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
+
 import type { ResponseError } from "./openapi";
+import { apiUrls } from "$stores";
+
+// API
+export async function csrfmiddlewaretokenCheck(
+  csrfmiddlewaretoken: string,
+  method: string = "POST"
+) {
+  return await fetch(`${apiUrls.utils}/csrf/check`, {
+    method: method,
+    headers: method === "POST" ? { "X-CSRFToken": csrfmiddlewaretoken } : {},
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => data.message);
+}
+
+export async function csrfmiddlewaretokenGet() {
+  return await fetch(`${apiUrls.utils}/csrf/get`, {
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => data.csrfmiddlewaretoken);
+}
 
 // toast
 export function toastCreate(message: string, theme: string = "") {
@@ -28,16 +53,12 @@ export function toastCreate(message: string, theme: string = "") {
   toast.push(message, toastTheme);
 }
 
-export function toastCatchError(err: ResponseError) {
-  toastCreate(`Error ${err.response.status} (${err.response.statusText}`, "error");
-}
+export function toastCreateOnError(err: ResponseError, message: string = "") {
+  if (!message) {
+    message = `Error ${err.response.status} (${err.response.statusText})`;
+  }
 
-export function toastSuccess() {
-  toast.push("hello", {
-    theme: {
-      "--toastColor": "mintcream",
-    },
-  });
+  toastCreate(message, "error");
 }
 
 // tooltip

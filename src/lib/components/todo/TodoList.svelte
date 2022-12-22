@@ -2,10 +2,10 @@
   import Fa from "svelte-fa/src/fa.svelte";
   import { faX } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
-  import { toast } from "@zerodevx/svelte-toast";
 
+  import { CsrfEnsure } from "$components/base";
   import { TodoDelete, TodoForm } from "$components/todo";
-  import { toastCreate, tooltip } from "$helpers";
+  import { toastCreate, toastCreateOnError, tooltip } from "$helpers";
   import type { TodosPartialUpdateRequest } from "$lib/openapi";
   import { Configuration, TodosApi } from "$lib/openapi";
   import { apiHost, todos, todoFormInputText, todoIdSelected, todosApi } from "$stores";
@@ -16,14 +16,14 @@
   onMount(async () => {
     $todosApi = new TodosApi(
       new Configuration({
-        basePath: $apiHost,
+        basePath: apiHost,
       })
     );
 
     try {
       $todos = await $todosApi.todosList();
-    } catch {
-      toastCreate("Could not fetch todos from server.", "error");
+    } catch (err: any) {
+      toastCreate("Could not fetch todos from the server.", "error");
     }
   });
 
@@ -39,7 +39,7 @@
     }
   }
 
-  function todoUpdateIsCompleted(todoId: number) {
+  async function todoUpdateIsCompleted(todoId: number) {
     const todo = $todos.filter((todo) => todo.id === todoId)[0];
     const todoIndex = $todos.indexOf(todo);
 
@@ -49,16 +49,28 @@
         isCompleted: !todo.isCompleted,
       },
     };
+
+    const deleteme = {
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": document.cookie.split("=")[1],
+      },
+      // body: `csrfmiddlewaretoken=${$csrfmiddlewaretoken}`,
+    };
+
     $todosApi
-      .todosPartialUpdate(params)
+      .todosPartialUpdate(params, deleteme)
       .then((res) => {
         $todos[todoIndex] = res;
+        toastCreate("Todo updated successfully", "success");
       })
       .catch((err) => {
-        toast.push(`${err}`, { classes: ["bg-error"] });
+        toastCreateOnError(err);
       });
   }
 </script>
+
+<CsrfEnsure />
 
 <TodoForm />
 <ul class="w-100 mt-6">

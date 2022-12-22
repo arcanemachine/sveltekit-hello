@@ -1,21 +1,21 @@
 <script type="ts">
   import "/src/css/app.css";
   import { Navbar, NavbarDrawer } from "$components/base/navbar";
-  import { Toast } from "$components/base/toast";
-  import { userDetails, userPrefs } from "$stores";
+  import { Toast } from "$components/base";
+  import { user } from "$stores";
 </script>
 
 <div class="drawer-mobile drawer">
   <input id="navbar-drawer" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content flex flex-col items-center justify-center">
-    {#if !$userPrefs.bottomNavbarEnabled}
+    {#if !$user.prefs.bottomNavbarEnabled}
       <Navbar />
     {/if}
+    {$user.username || "Not logged in"}
     <main class="mt-6 h-full">
       <slot />
-      {$userDetails.username || "Not logged in"}
     </main>
-    {#if $userPrefs.bottomNavbarEnabled}
+    {#if $user.prefs.bottomNavbarEnabled}
       <Navbar />
     {/if}
   </div>
@@ -46,7 +46,7 @@
 
   /** custom styles **/
   a {
-    @apply text-blue-600 visited:text-purple-600 hover:text-blue-800;
+    @apply text-blue-600 hover:text-blue-800;
   }
 
   .action-links {

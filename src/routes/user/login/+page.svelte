@@ -1,13 +1,15 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import reporter from "@felte/reporter-tippy";
-  import { createForm } from "felte";
   import { onMount } from "svelte";
 
+  import { createForm } from "felte";
+  import reporter from "@felte/reporter-tippy";
+
+  import { CsrfEnsure } from "$components/base";
   import type { AuthLoginCreateRequest, ResponseError } from "$lib/openapi";
   import { Configuration, AuthApi } from "$lib/openapi";
-  import { apiHost, userDetails } from "$stores";
-  import { toastCatchError, toastCreate } from "$helpers";
+  import { apiHost, user } from "$stores";
+  import { toastCreateOnError, toastCreate } from "$helpers";
 
   let authApi: AuthApi;
 
@@ -15,7 +17,7 @@
   onMount(async () => {
     authApi = new AuthApi(
       new Configuration({
-        basePath: $apiHost,
+        basePath: apiHost,
       })
     );
   });
@@ -31,25 +33,34 @@
         },
       };
 
+      const deleteme = {
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": document.cookie.split("=")[1],
+        },
+        // body: `csrfmiddlewaretoken=${$csrfmiddlewaretoken}`,
+      };
+
       authApi
-        .authLoginCreate(params)
+        .authLoginCreate(params, deleteme)
         .then(() => {
-          toastCreate("Login successful", "success");
-          $userDetails.username = values.username; // save username as indication of auth status
-          setTimeout(() => {
-            goto("/todo");
-          }, 1000);
+          $user.username = values.username; // save username to user store
+          localStorage.setItem("username", values.username); // save username to localStorage
+          toastCreate("Login successful", "success"); // success message
+          goto("/todo"); // redirect to todos
         })
         .catch((err: ResponseError) => {
           if (err.response.status == 400) {
             toastCreate("Error: Incorrect username or password", "error");
           } else {
-            toastCatchError(err);
+            toastCreateOnError(err);
           }
         });
     },
   });
 </script>
+
+<CsrfEnsure />
 
 <section class="prose">
   <h1 class="text-center">Login</h1>

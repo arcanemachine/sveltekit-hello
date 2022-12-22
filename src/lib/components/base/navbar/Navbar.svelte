@@ -3,7 +3,7 @@
   import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 
   import { DarkModeToggle } from ".";
-  import { userDetails, userPrefs } from "$stores";
+  import { user } from "$stores";
 </script>
 
 <!-- spacer -->
@@ -44,17 +44,17 @@
     </span>
 
     <!-- action menu -->
-    <div class="dropdown-end dropdown {$userPrefs.bottomNavbarEnabled && 'dropdown-top'}">
+    <div class="dropdown-end dropdown {$user.prefs.bottomNavbarEnabled && 'dropdown-top'}">
       <label tabindex="0" class="btn-ghost btn-square btn m-1">
         <Fa icon={faCircleUser} size="lg" />
       </label>
       <ul class="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow">
-        {#if !$userDetails.username}
+        {#if !$user.username}
           <li><a href="/user/login">Login</a></li>
           <li><a href="/user/register">Register</a></li>
         {:else}
-          <li><a href="/user">Register</a></li>
-          <li><a href="/user/logout">Register</a></li>
+          <!--li><a href="/user">Your account</a></li-->
+          <li><a href="/user/logout">Logout</a></li>
         {/if}
       </ul>
     </div>

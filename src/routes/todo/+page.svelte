@@ -1,9 +1,9 @@
 <script>
   import { TodoList } from "$components/todo";
-  import { userDetails } from "$stores";
+  import { user } from "$stores";
 </script>
 
-{#if !$userDetails.username}
+{#if !$user.username}
   <section class="flex-center prose flex h-full flex-col">
     <h4>You must login or register before you can create any todos.</h4>
     <div class="action-links">

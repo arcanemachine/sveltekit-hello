@@ -22,7 +22,4 @@ module.exports = {
   },
   mode: "jit",
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
-  // theme: {
-  //   extend: {},
-  // },
 };
