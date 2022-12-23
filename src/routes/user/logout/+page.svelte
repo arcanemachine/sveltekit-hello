@@ -51,7 +51,14 @@
       <input class="btn-primary btn" type="submit" value="Yes" />
     </div>
     <div class="form-control mt-4 w-full max-w-xs">
-      <button class="btn-secondary btn" type="button" on:click={() => history.go(-1)}>No</button>
+      <button
+        class="btn-secondary btn"
+        type="button"
+        on:click={() => {
+          toastCreate("Logout canceled", "info"); // show info message
+          history.go(-1); // return to previous page
+        }}>No</button
+      >
     </div>
   </form>
 </section>

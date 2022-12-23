@@ -1,8 +1,8 @@
 import type { Writable } from "svelte/store";
 import { writable } from "svelte/store";
-import Cookies from "js-cookie";
 
 import { Configuration, type Todo, TodosApi, AuthApi } from "$lib/openapi";
+// import { csrftokenCheck, csrftokenGet } from "$helpers";
 
 // API
 type ApiUrls = {
@@ -18,6 +18,7 @@ type ApiApis = {
 
 type ApiData = {
   host: string;
+  csrfmiddlewaretoken: string;
   apis: ApiApis;
   overrides: RequestInit;
   urls: ApiUrls;
@@ -31,20 +32,20 @@ export const apiUrls: ApiUrls = {
   utils: `${apiHost}/api/utils`,
 };
 
-export const apiRequestParamsGet = () => {
-  const csrfToken = Cookies.get("csrftoken");
-
+export const apiRequestParamsBuild = (csrfmiddlewaretoken: string) => {
   return {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": csrfToken,
+      "X-CSRFToken": csrfmiddlewaretoken,
+      // mode: "same-origin", // TODO: add this line
     },
   } as RequestInit;
 };
 
 export const apiStore: Writable<ApiData> = writable({
   host: apiHost,
+  csrfmiddlewaretoken: "",
   apis: {
     todos: new TodosApi(
       new Configuration({
@@ -58,30 +59,27 @@ export const apiStore: Writable<ApiData> = writable({
     ),
   },
   get overrides() {
-    return apiRequestParamsGet();
+    return apiRequestParamsBuild(this.csrfmiddlewaretoken);
   },
   urls: apiUrls,
 });
 
-// TODO: rewrite with fetch-based get and set methods
-// export const csrfToken: Writable<string> = (() => {
+// export const csrftoken: Writable<string> = (() => {
+//   // const { subscribe, set, update } = writable(Cookies.get("csrftoken") ?? "");
 //   const { subscribe, set, update } = writable("");
 //
 //   return {
 //     subscribe,
 //     set,
 //     update,
-//     // fetch: async () => {
-//     //   return await fetch(`${apiUrls.utils}/csrf/get`, {
-//     //     credentials: "include",
-//     //   })
-//     //     .then((res) => res.json())
-//     //     .then((data) => data.csrfToken);
-//     // },
+//     fetch: csrftokenGet,
+//     check: csrftokenCheck,
+//     clear: () => {
+//       Cookies.remove("csrftoken");
+//       set("");
+//     },
 //   };
 // })();
-
-export const csrfToken: Writable<string> = writable("");
 
 // todos
 // export const todosApi: Writable<TodosApi> = writable();

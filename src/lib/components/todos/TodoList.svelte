@@ -9,9 +9,7 @@
   import { apiStore, todos } from "$stores";
   import { todoFormInputText, todoIdSelected } from "$stores/todos";
 
-  // data
-  let todoDeleteModalVisible = false;
-
+  let todoDeleteModalVisible = false; // data
   $: todosApi = $apiStore.apis.todos; // computed
 
   // lifecycle

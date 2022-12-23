@@ -1,33 +1,48 @@
+import Cookies from "js-cookie";
 import { toast } from "@zerodevx/svelte-toast";
 
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
 
+import { apiRequestParamsBuild, apiUrls } from "$stores";
 import type { ResponseError } from "./openapi";
-import { apiRequestParamsGet, apiUrls } from "$stores";
 
 /* API */
 // auth
+export async function csrfTokensGet() {
+  /** Get a 'csrftoken' cookie, and return a 'csrfmiddlewaretoken' string. */
+  return await fetch(`${apiUrls.utils}/csrftoken/`, {
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => data.csrfmiddlewaretoken)
+    .catch((err) => {
+      toastCreateOnError(err); // show error message
+      throw err; // raise exception
+    });
+}
+
 export async function csrfTokenCheck(csrfToken: string) {
+  /** Check the validity of a CSRF token. The function will accept an masked
+   *  token (as in a 'csrfmiddlewaretoken' string) -OR- an unmasked one (as in
+   *  a 'csrftoken' cookie), so MAKE SURE YOU PASS IN THE 'csrfmiddlewaretoken'
+   *  STRING TO PROTECT AGAINST 'BREACH' ATTACKS.
+   */
   return await fetch(`${apiUrls.utils}/csrftoken/`, {
     method: "POST",
     headers: { "X-CSRFToken": csrfToken },
     credentials: "include",
   })
     .then((res) => res.json())
-    .then((data) => data.message);
+    .then((data) => data.message)
+    .catch((err) => {
+      toastCreateOnError(err); // show error message
+      throw err; // raise exception
+    });
 }
 
-export async function csrfTokenGet() {
-  return await fetch(`${apiUrls.utils}/csrftoken/`, {
-    credentials: "include",
-  })
-    .then((res) => res.json())
-    .then((data) => data.csrfToken);
-}
-
-export async function userAuthStatusCheck(method: string = "GET") {
-  const defaultParams = apiRequestParamsGet();
+export async function userAuthStatusCheck(csrfmiddlewaretoken: string, method: string = "GET") {
+  const defaultParams = apiRequestParamsBuild(csrfmiddlewaretoken);
   const params: RequestInit = Object.assign(defaultParams, {
     method,
   });
@@ -77,7 +92,11 @@ export function toastCreate(message: string, theme: string = "") {
 
 export function toastCreateOnError(err: ResponseError, message: string = "") {
   if (!message) {
-    message = `Error ${err.response.status} (${err.response.statusText})`;
+    if (err.response) {
+      message = `Error ${err.response.status} (${err.response.statusText})`;
+    } else {
+      message = "Error: Could not connect to API server";
+    }
   }
 
   toastCreate(message, "error");
