@@ -7,16 +7,14 @@
 
   import { CsrfEnsure } from "$components/base";
   import type { ResponseError } from "$lib/openapi";
-  // import { Configuration, AuthApi } from "$lib/openapi";
   import { apiStore, user } from "$stores";
   import { toastCreateOnError, toastCreate } from "$helpers";
 
-  // let authApi: AuthApi;
-
   // lifecycle
-  onMount(async () => {
+  onMount(() => {
     if (!$user.username) {
-      toastCreate("You are already logged out.", "error");
+      // if user is not logged in, show info message and redirect to home page
+      toastCreate("You are already logged out.", "info");
       goto("/");
     }
   });
@@ -44,7 +42,7 @@
 <CsrfEnsure />
 
 <section class="prose text-center">
-  <h1>Logout</h1>
+  <h1 class="page-title">Logout</h1>
 
   <h4>Are you sure to want to log out?</h4>
 
@@ -53,13 +51,7 @@
       <input class="btn-primary btn" type="submit" value="Yes" />
     </div>
     <div class="form-control mt-4 w-full max-w-xs">
-      <button
-        class="btn-secondary btn"
-        type="button"
-        on:click={() => {
-          history.go(-1);
-        }}>No</button
-      >
+      <button class="btn-secondary btn" type="button" on:click={() => history.go(-1)}>No</button>
     </div>
   </form>
 </section>

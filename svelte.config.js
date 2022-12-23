@@ -8,8 +8,8 @@ const config = {
     alias: {
       $components: "src/lib/components",
       $helpers: "src/lib/helpers",
-      $stores: "src/lib/stores/stores.ts",
-      // $types: "src/lib/types",
+      $stores: "src/lib/stores",
+      $types: "src/lib/types",
     },
   },
   preprocess: [

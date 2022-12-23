@@ -7,17 +7,19 @@
 
   import { CsrfEnsure } from "$components/base";
   import type { AuthLoginCreateRequest, ResponseError } from "$lib/openapi";
-  // import { Configuration, AuthApi } from "$lib/openapi";
   import { apiStore, user } from "$stores";
-  import { toastCreateOnError, toastCreate } from "$helpers";
-
-  // let authApi: AuthApi;
+  import { toastCreateOnError, toastCreate, userAuthStatusCheck } from "$helpers";
 
   // lifecycle
   onMount(async () => {
     if ($user.username) {
-      toastCreate("You are already logged in.", "error");
-      goto("/");
+      if (!(await userAuthStatusCheck())) {
+        // if authentication cookies are expired, log the user out
+        localStorage.removeItem("username");
+      } else {
+        toastCreate("You are already logged in.");
+        goto("/todos");
+      }
     }
   });
 
@@ -38,7 +40,7 @@
           $user.username = values.username; // save username to user store
           localStorage.setItem("username", values.username); // save username to localStorage
           toastCreate("Login successful", "success"); // success message
-          goto("/todo"); // redirect to todos
+          goto("/todos"); // redirect to todos
         })
         .catch((err: ResponseError) => {
           if (err.response.status == 400) {
@@ -54,7 +56,7 @@
 <CsrfEnsure />
 
 <section class="prose">
-  <h1 class="text-center">Login</h1>
+  <h1 class="page-title">Login</h1>
 
   <form use:form>
     <div class="form-control w-full max-w-xs">

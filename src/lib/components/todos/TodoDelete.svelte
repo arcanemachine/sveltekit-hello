@@ -4,15 +4,12 @@
   import { toastCreate, toastCreateOnError } from "$helpers";
   import type { Todo, TodosDestroyRequest } from "$lib/openapi";
   import { apiStore, todos } from "$stores";
+  import { todoFormInputText, todoIdSelected } from "$stores/todos";
 
-  // props
-  export let modalVisible: boolean;
-  export let todoFormInputText: string;
-  export let todoIdSelected: number;
-
+  export let modalVisible: boolean; // props
   $: todosApi = $apiStore.apis.todos; // computed
 
-  // functions
+  // methods
   function handleKeydown(evt: KeyboardEvent) {
     if (!modalVisible) return;
 
@@ -33,7 +30,7 @@
 
   function todoDelete() {
     const params: TodosDestroyRequest = {
-      id: todoIdSelected,
+      id: $todoIdSelected,
     };
 
     todosApi
@@ -41,10 +38,10 @@
       .then((res) => {
         if (res.raw.ok && res.raw.status === 204) {
           // delete locally
-          $todos = $todos.filter((todo: Todo) => todo.id !== todoIdSelected);
+          $todos = $todos.filter((todo: Todo) => todo.id !== $todoIdSelected);
 
-          todoFormInputText = ""; // reset form input text
-          todoIdSelected = 0; // reset selected item
+          $todoFormInputText = ""; // reset form input text
+          $todoIdSelected = 0; // reset selected item
           toastCreate("Todo deleted successfully", "success"); // success message
           modalClose();
         } else {
@@ -65,15 +62,17 @@
 
 {#if modalVisible}
   <div class="modal">
-    <div class="modal-box relative max-w-xs">
-      <label
-        for="todo-delete-modal"
-        class="btn-secondary btn-sm btn-circle btn absolute right-3 top-3">✕</label
-      >
-      <h3 class="text-center text-lg font-bold">Delete this Todo?</h3>
-      <div class="flex-center mx-auto mt-6 flex">
-        <button class="btn-secondary btn mx-2" on:click={modalClose}>No</button>
-        <button class="btn-primary btn mx-2" on:click={todoDelete}>Yes</button>
+    <div class="modal-box relative max-w-xs rounded-tr-none">
+      <label for="todo-delete-modal" class="modal-button-close btn-square">✕</label>
+
+      <h2 class="mt-2 text-center font-bold">Delete this Todo?</h2>
+
+      <div class="form-control mt-6 w-full max-w-xs">
+        <button class="btn-error btn" on:click={todoDelete}>Yes</button>
+      </div>
+
+      <div class="form-control mt-4 w-full max-w-xs">
+        <button class="btn-secondary btn" on:click={modalClose}>No</button>
       </div>
     </div>
   </div>

@@ -3,18 +3,16 @@
   import { faX } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
 
-  import { CsrfEnsure } from "$components/base";
-  import { TodoDelete, TodoForm } from "$components/todo";
+  import { TodoDelete } from "$components/todos";
   import { toastCreate, toastCreateOnError, tooltip } from "$helpers";
   import type { TodosPartialUpdateRequest } from "$lib/openapi";
   import { apiStore, todos } from "$stores";
+  import { todoFormInputText, todoIdSelected } from "$stores/todos";
 
   // data
   let todoDeleteModalVisible = false;
-  let todoIdSelected: number;
-  let todoFormInputText: string;
 
-  $: todosApi = $apiStore.apis.todos; // computes
+  $: todosApi = $apiStore.apis.todos; // computed
 
   // lifecycle
   onMount(async () => {
@@ -27,14 +25,14 @@
 
   // methods
   function todoHandleClick(todoId: number) {
-    if (todoIdSelected !== todoId) {
+    if ($todoIdSelected !== todoId) {
       // enable item update form
-      todoIdSelected = todoId;
-      todoFormInputText = $todos.filter((todo) => todo.id === todoId)[0].content;
+      $todoIdSelected = todoId;
+      $todoFormInputText = $todos.filter((todo) => todo.id === todoId)[0].content;
     } else {
       // reset item form
-      todoIdSelected = 0;
-      todoFormInputText = "";
+      $todoIdSelected = 0;
+      $todoFormInputText = "";
     }
   }
 
@@ -53,7 +51,6 @@
       .todosPartialUpdate(params, $apiStore.overrides)
       .then((res) => {
         $todos[todoIndex] = res;
-        toastCreate("Todo updated successfully", "success");
       })
       .catch((err) => {
         toastCreateOnError(err);
@@ -61,14 +58,11 @@
   }
 </script>
 
-<CsrfEnsure />
-
-<TodoForm {todoFormInputText} {todoIdSelected} />
 <ul class="w-100 mt-6">
   {#each $todos as todo (todo.id)}
     <li
       class="flex-center form-control flex cursor-pointer flex-row hover:opacity-75
-             {todo.id === todoIdSelected && 'rounded-75 rounded bg-base-200 text-info'}"
+             {todo.id === $todoIdSelected && 'rounded-75 rounded bg-base-200 text-info'}"
     >
       <div class="flex-start mr-2 grow" use:tooltip={"Modify todo"}>
         <button
@@ -80,7 +74,7 @@
         </button>
       </div>
       <div>
-        {#if todoIdSelected === todo.id}
+        {#if $todoIdSelected === todo.id}
           <label class="label">
             <span aria-label="Light Mode Icon">
               <label for="todo-delete-modal" use:tooltip={"Delete todo"} tabindex="0">
@@ -112,7 +106,7 @@
 </ul>
 
 <!-- modals -->
-<TodoDelete modalVisible={todoDeleteModalVisible} {todoFormInputText} {todoIdSelected} />
+<TodoDelete modalVisible={todoDeleteModalVisible} />
 
 <style>
   .todo-delete-icon {

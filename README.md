@@ -1,20 +1,19 @@
-# create-svelte
+# sveltekit-todo
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Yet another todo list made with Svelte.
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+Features:
+  - Powered by a [REST API backend](https://github.com/arcanemachine/django-todo-api) (made with Django and DRF).
+    - Uses an OpenAPI client generated from a `schema.yml` file on the server.
+  - Handles user authentication.
+  - Uses session authentication for the unbeatable security offered by HttpOnly cookies.
 
 ## Developing
+
+This project uses HTTPS via self-signed certificates powered by `mkcert`. You have two choices:
+  - Generate certificates and place them in `.cert/`
+  - Comment out the `server` block in `vite.config.js`.
+    - Note that disabling HTTPS will probably cause the API server to stop working.
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 

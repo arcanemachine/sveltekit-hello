@@ -4,4 +4,6 @@
 
 <CsrfEnsure />
 
-<section>User profile</section>
+<section class="prose">
+  <h1 class="page-title">Your Account</h1>
+</section>

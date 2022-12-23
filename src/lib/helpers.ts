@@ -4,13 +4,14 @@ import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
 
 import type { ResponseError } from "./openapi";
-import { apiUrls } from "$stores";
+import { apiRequestParamsGet, apiUrls } from "$stores";
 
-// API
-export async function csrfTokenCheck(csrfToken: string, method: string = "POST") {
-  return await fetch(`${apiUrls.utils}/csrf/check`, {
-    method: method,
-    headers: method === "POST" ? { "X-CSRFToken": csrfToken } : {},
+/* API */
+// auth
+export async function csrfTokenCheck(csrfToken: string) {
+  return await fetch(`${apiUrls.utils}/csrftoken/`, {
+    method: "POST",
+    headers: { "X-CSRFToken": csrfToken },
     credentials: "include",
   })
     .then((res) => res.json())
@@ -18,23 +19,31 @@ export async function csrfTokenCheck(csrfToken: string, method: string = "POST")
 }
 
 export async function csrfTokenGet() {
-  return await fetch(`${apiUrls.utils}/csrf/get`, {
+  return await fetch(`${apiUrls.utils}/csrftoken/`, {
     credentials: "include",
   })
     .then((res) => res.json())
     .then((data) => data.csrfToken);
 }
 
+export async function userAuthStatusCheck(method: string = "GET") {
+  const defaultParams = apiRequestParamsGet();
+  const params: RequestInit = Object.assign(defaultParams, {
+    method,
+  });
+  return await fetch(`${apiUrls.auth}/check/`, params).then((res) => res.json());
+}
+
 // toast
 export function toastCreate(message: string, theme: string = "") {
   let toastTheme: object = {};
 
-  if (theme === "error") {
+  if (theme === "info") {
     toastTheme = {
       theme: {
-        "--toastColor": "white",
-        "--toastBackground": "hsl(var(--er))",
-        "--toastBarBackground": "hsl(var(--er))",
+        "--toastColor": "black",
+        "--toastBackground": "hsl(var(--in))",
+        "--toastBarBackground": "hsl(var(--in))",
       },
     };
   } else if (theme === "success") {
@@ -43,6 +52,22 @@ export function toastCreate(message: string, theme: string = "") {
         "--toastColor": "white",
         "--toastBackground": "hsl(var(--su))",
         "--toastBarBackground": "hsl(var(--su))",
+      },
+    };
+  } else if (theme === "warning") {
+    toastTheme = {
+      theme: {
+        "--toastColor": "black",
+        "--toastBackground": "hsl(var(--wa))",
+        "--toastBarBackground": "hsl(var(--wa))",
+      },
+    };
+  } else if (theme === "error") {
+    toastTheme = {
+      theme: {
+        "--toastColor": "white",
+        "--toastBackground": "hsl(var(--er))",
+        "--toastBarBackground": "hsl(var(--er))",
       },
     };
   }

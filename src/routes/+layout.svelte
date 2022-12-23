@@ -11,8 +11,7 @@
     {#if !$user.prefs.bottomNavbarEnabled}
       <Navbar />
     {/if}
-    {$user.username || "Not logged in"}
-    <main class="mt-6 h-full">
+    <main class="prose mt-6 h-full">
       <slot />
     </main>
     {#if $user.prefs.bottomNavbarEnabled}
@@ -44,11 +43,12 @@
     --toastContainerLeft: auto;
   }
 
-  /** custom styles **/
+  /** tags **/
   a {
     @apply text-blue-600 hover:text-blue-800;
   }
 
+  /** components **/
   .action-links {
     margin-top: 1rem;
   }
@@ -63,5 +63,13 @@
   .flex-center {
     justify-content: center;
     align-items: center;
+  }
+
+  .modal-button-close {
+    @apply btn-secondary btn-sm btn absolute right-0 top-0 rounded-tr-none rounded-br-none rounded-tl-none;
+  }
+
+  .page-title {
+    text-align: center;
   }
 </style>

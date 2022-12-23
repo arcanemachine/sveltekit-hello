@@ -3,11 +3,11 @@ import { writable } from "svelte/store";
 import Cookies from "js-cookie";
 
 import { Configuration, type Todo, TodosApi, AuthApi } from "$lib/openapi";
-// import { csrfTokenGet } from "$helpers";
 
 // API
 type ApiUrls = {
   root: string;
+  auth: string;
   utils: string;
 };
 
@@ -27,7 +27,20 @@ const apiHost = `${location.protocol}//${location.host}`;
 
 export const apiUrls: ApiUrls = {
   root: `${apiHost}/api`,
+  auth: `${apiHost}/api/auth`,
   utils: `${apiHost}/api/utils`,
+};
+
+export const apiRequestParamsGet = () => {
+  const csrfToken = Cookies.get("csrftoken");
+
+  return {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
+    },
+  } as RequestInit;
 };
 
 export const apiStore: Writable<ApiData> = writable({
@@ -45,14 +58,7 @@ export const apiStore: Writable<ApiData> = writable({
     ),
   },
   get overrides() {
-    const csrfToken = Cookies.get("csrftoken");
-
-    return {
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrfToken,
-      },
-    } as RequestInit;
+    return apiRequestParamsGet();
   },
   urls: apiUrls,
 });
