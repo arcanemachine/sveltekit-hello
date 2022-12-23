@@ -49,7 +49,7 @@
         <Fa icon={faCircleUser} size="lg" />
       </label>
       <ul class="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow">
-        {#if !$user.username}
+        {#if !$user.isLoggedIn}
           <li><a href="/user/login">Login</a></li>
           <li><a href="/user/register">Register</a></li>
         {:else}

@@ -12,7 +12,7 @@
 
   // lifecycle
   onMount(() => {
-    if (!$user.username) {
+    if (!$user.isLoggedIn) {
       // if user is not logged in, show info message and redirect to home page
       toastCreate("You are already logged out.", "info");
       goto("/");
@@ -26,7 +26,7 @@
       $apiStore.apis.auth
         .authLogoutCreate($apiStore.overrides as RequestInit)
         .then(() => {
-          $user.username = values.username; // reset username in user store
+          $user.username = values.username; // clear username in user store
           localStorage.removeItem("username"); // remove username from localStorage
           toastCreate("Logout successful", "success"); // success message
 

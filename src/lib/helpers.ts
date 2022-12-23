@@ -18,16 +18,17 @@ export async function csrfTokensGet() {
     .then((data) => data.csrfmiddlewaretoken)
     .catch((err) => {
       toastCreateOnError(err); // show error message
-      throw err; // raise exception
+      // throw err; // raise exception
     });
 }
 
 export async function csrfTokenCheck(csrfToken: string) {
   /** Check the validity of a CSRF token. The function will accept an masked
    *  token (as in a 'csrfmiddlewaretoken' string) -OR- an unmasked one (as in
-   *  a 'csrftoken' cookie), so MAKE SURE YOU PASS IN THE 'csrfmiddlewaretoken'
-   *  STRING TO PROTECT AGAINST 'BREACH' ATTACKS.
+   *  a 'csrftoken' cookie).
+   *  To protect against BREACH attacks, the masked token should be used.
    */
+  console.log(`Using token: ${csrfToken}`);
   return await fetch(`${apiUrls.utils}/csrftoken/`, {
     method: "POST",
     headers: { "X-CSRFToken": csrfToken },
@@ -36,8 +37,16 @@ export async function csrfTokenCheck(csrfToken: string) {
     .then((res) => res.json())
     .then((data) => data.message)
     .catch((err) => {
-      toastCreateOnError(err); // show error message
-      throw err; // raise exception
+      debugger;
+      if (err?.response.status === 403) {
+        toastCreateOnError(
+          err,
+          "We were unable to verify the authenticity of your request. " +
+            "You may need to refresh the page."
+        );
+      } else {
+        toastCreateOnError(err); // show error message
+      }
     });
 }
 

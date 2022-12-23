@@ -64,32 +64,12 @@ export const apiStore: Writable<ApiData> = writable({
   urls: apiUrls,
 });
 
-// export const csrftoken: Writable<string> = (() => {
-//   // const { subscribe, set, update } = writable(Cookies.get("csrftoken") ?? "");
-//   const { subscribe, set, update } = writable("");
-//
-//   return {
-//     subscribe,
-//     set,
-//     update,
-//     fetch: csrftokenGet,
-//     check: csrftokenCheck,
-//     clear: () => {
-//       Cookies.remove("csrftoken");
-//       set("");
-//     },
-//   };
-// })();
-
-// todos
-// export const todosApi: Writable<TodosApi> = writable();
-export const todos: Writable<Array<Todo>> = writable([]);
-// export const todoIdSelected: Writable<number> = writable(0);
-// export const todoFormInputText: Writable<string> = writable("");
+export const todos: Writable<Array<Todo>> = writable([]); // todos
 
 // user
 type User = {
   username: string;
+  isLoggedIn: Boolean;
   prefs: {
     bottomNavbarEnabled: boolean;
   };
@@ -97,6 +77,9 @@ type User = {
 
 export const user: Writable<User> = writable({
   username: localStorage.getItem("username") ?? "",
+  get isLoggedIn() {
+    return Boolean(this.username);
+  },
   prefs: {
     bottomNavbarEnabled: false,
   },

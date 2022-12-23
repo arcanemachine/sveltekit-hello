@@ -8,13 +8,13 @@
   import { CsrfEnsure } from "$components/base";
   import type { AuthLoginCreateRequest, ResponseError } from "$lib/openapi";
   import { apiStore, user } from "$stores";
-  import { toastCreateOnError, toastCreate, userAuthStatusCheck } from "$helpers";
+  import { csrfTokensGet, toastCreateOnError, toastCreate, userAuthStatusCheck } from "$helpers";
 
   // lifecycle
   onMount(async () => {
-    if ($user.username) {
-      if (!(await userAuthStatusCheck())) {
-        // if authentication cookies are expired, log the user out
+    if ($user.isLoggedIn) {
+      if (!(await userAuthStatusCheck($apiStore.csrfmiddlewaretoken))) {
+        // if authentication cookies are expired, remove the username from localStorage
         localStorage.removeItem("username");
       } else {
         toastCreate("You are already logged in.");
@@ -36,7 +36,8 @@
 
       $apiStore.apis.auth
         .authLoginCreate(params, $apiStore.overrides as RequestInit)
-        .then(() => {
+        .then(async () => {
+          $apiStore.csrfmiddlewaretoken = await csrfTokensGet(); // get new CSRF middleware token
           $user.username = values.username; // save username to user store
           localStorage.setItem("username", values.username); // save username to localStorage
           toastCreate("Login successful", "success"); // success message
