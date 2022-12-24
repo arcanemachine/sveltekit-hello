@@ -1,22 +1,21 @@
 <script lang="ts">
   import Fa from "svelte-fa/src/fa.svelte";
-  import { faX } from "@fortawesome/free-solid-svg-icons";
+  import { faTrash } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
 
   import { TodoDelete } from "$components/todos";
   import { toastCreate, toastCreateOnError, tooltip } from "$helpers";
   import type { TodosPartialUpdateRequest } from "$lib/openapi";
-  import { apiStore, todos } from "$stores";
-  import { todoFormInputText, todoIdSelected } from "$stores/todos";
+  import { apiStore, todos, todoFormInputText, todoIdSelected } from "$stores";
 
-  let todoDeleteModalVisible = false; // data
+  // let todoDeleteModalVisible = false; // data
   $: todosApi = $apiStore.apis.todos; // computed
 
   // lifecycle
   onMount(async () => {
     try {
       $todos = await todosApi.todosList(); // get todos from server
-    } catch (err: any) {
+    } catch (error: any) {
       toastCreate("Could not fetch todos from the server.", "error"); // show error message
     }
   });
@@ -47,16 +46,16 @@
 
     todosApi
       .todosPartialUpdate(params, $apiStore.overrides)
-      .then((res) => {
-        $todos[todoIndex] = res;
+      .then((response) => {
+        $todos[todoIndex] = response;
       })
-      .catch((err) => {
-        toastCreateOnError(err);
+      .catch((error) => {
+        toastCreateOnError(error);
       });
   }
 </script>
 
-<ul class="w-100 mt-6">
+<ul class="w-100 mt-6 list-none pl-0">
   {#each $todos as todo (todo.id)}
     <li
       class="flex-center form-control flex cursor-pointer flex-row hover:opacity-75
@@ -74,10 +73,10 @@
       <div>
         {#if $todoIdSelected === todo.id}
           <label class="label">
-            <span aria-label="Light Mode Icon">
+            <span aria-label="Delete todo">
               <label for="todo-delete-modal" use:tooltip={"Delete todo"} tabindex="0">
                 <Fa
-                  icon={faX}
+                  icon={faTrash}
                   style="width: 24px; height: 24px"
                   class="todo-delete-icon cursor-pointer py-[2px] text-red-500"
                 />
@@ -103,8 +102,10 @@
   {/each}
 </ul>
 
-<!-- modals -->
+<!-- modals
 <TodoDelete modalVisible={todoDeleteModalVisible} />
+ -->
+<TodoDelete />
 
 <style>
   .todo-delete-icon {

@@ -1,12 +1,12 @@
-<script>
-  import { SvelteToast } from "@zerodevx/svelte-toast";
+<script lang="ts">
+  import { SvelteToast, type SvelteToastOptions } from "@zerodevx/svelte-toast";
 
-  const options = {
+  const options: SvelteToastOptions = {
     reversed: true,
     intro: { y: 125 },
     theme: {
       "--toastBarHeight": 0,
-      "--toastWidth": "20rem",
+      "--toastWidth": "22rem",
     },
   };
 </script>

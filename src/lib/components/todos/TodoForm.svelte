@@ -1,8 +1,7 @@
 <script lang="ts">
   import { toastCreate } from "$helpers";
   import type { TodosCreateRequest, TodosPartialUpdateRequest } from "$lib/openapi";
-  import { apiStore, todos } from "$stores";
-  import { todoFormInputText, todoIdSelected } from "$stores/todos";
+  import { apiStore, todos, todoFormInputText, todoIdSelected } from "$stores";
 
   $: todosApi = $apiStore.apis.todos; // computed
 
@@ -57,7 +56,7 @@
   }
 </script>
 
-<div class="form-control mt-2">
+<div class="mx-auto">
   <div class="input-group">
     <input
       type="text"

@@ -18,7 +18,6 @@
     "@sveltejs/adapter-static": "^1.0.0-next.48",
     "@sveltejs/kit": "next",
     "@tailwindcss/typography": "^0.5.8",
-    "@types/js-cookie": "^3.0.2",
     "@zerodevx/svelte-toast": "^0.8.2",
     "autoprefixer": "^10.4.13",
     "eslint": "^8.16.0",
@@ -40,11 +39,13 @@
   "type": "module",
   "dependencies": {
     "@felte/reporter-tippy": "^1.1.4",
+    "@felte/validator-zod": "^1.0.12",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "daisyui": "^2.42.1",
     "felte": "^1.2.6",
-    "js-cookie": "^3.0.1",
     "svelte-fa": "^3.0.3",
-    "tippy.js": "^6.3.7"
+    "tippy.js": "^6.3.7",
+    "yaml": "^2.2.0",
+    "zod": "^3.20.2"
   }
 }

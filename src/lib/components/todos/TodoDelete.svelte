@@ -3,8 +3,7 @@
 
   import { toastCreate, toastCreateOnError } from "$helpers";
   import type { Todo, TodosDestroyRequest } from "$lib/openapi";
-  import { apiStore, todos } from "$stores";
-  import { todoFormInputText, todoIdSelected } from "$stores/todos";
+  import { apiStore, todos, todoFormInputText, todoIdSelected } from "$stores";
 
   export let modalVisible: boolean; // props
   $: todosApi = $apiStore.apis.todos; // computed
@@ -35,8 +34,8 @@
 
     todosApi
       .todosDestroyRaw(params, $apiStore.overrides)
-      .then((res) => {
-        if (res.raw.ok && res.raw.status === 204) {
+      .then((response) => {
+        if (response.raw.ok && response.raw.status === 204) {
           // delete locally
           $todos = $todos.filter((todo: Todo) => todo.id !== $todoIdSelected);
 
@@ -45,11 +44,12 @@
           toastCreate("Todo deleted successfully", "success"); // success message
           modalClose();
         } else {
-          toastCreate(`Error ${res.raw.status}: ${res.raw.statusText}`, "error"); // error message
+          // show error message
+          toastCreate(`Error ${response.raw.status}: ${response.raw.statusText}`, "error");
         }
       })
-      .catch((err) => {
-        toastCreateOnError(err);
+      .catch((error) => {
+        toastCreateOnError(error);
       });
   }
 
@@ -60,20 +60,18 @@
 
 <input type="checkbox" id="todo-delete-modal" class="modal-toggle" bind:checked={modalVisible} />
 
-{#if modalVisible}
-  <div class="modal">
-    <div class="modal-box relative max-w-xs rounded-tr-none">
-      <label for="todo-delete-modal" class="modal-button-close btn-square">✕</label>
+<div class="modal">
+  <div class="modal-box relative max-w-xs rounded-tr-none">
+    <label for="todo-delete-modal" class="modal-button-close btn-square">✕</label>
 
-      <h2 class="mt-2 text-center font-bold">Delete this Todo?</h2>
+    <h2 class="mt-2 text-center font-bold">Delete this todo?</h2>
 
-      <div class="form-control mt-6 w-full max-w-xs">
-        <button class="btn-error btn" on:click={todoDelete}>Yes</button>
-      </div>
+    <div class="form-control mt-6 w-full max-w-xs">
+      <button class="btn-error btn" on:click={todoDelete}>Yes</button>
+    </div>
 
-      <div class="form-control mt-4 w-full max-w-xs">
-        <button class="btn-secondary btn" on:click={modalClose}>No</button>
-      </div>
+    <div class="form-control mt-4 w-full max-w-xs">
+      <button class="btn-secondary btn" on:click={modalClose}>No</button>
     </div>
   </div>
-{/if}
+</div>

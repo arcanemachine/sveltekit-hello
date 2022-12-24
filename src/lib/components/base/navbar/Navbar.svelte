@@ -3,11 +3,10 @@
   import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 
   import { DarkModeToggle } from ".";
-  import { user } from "$stores";
+  import { isLoading, user } from "$stores";
 </script>
 
-<!-- spacer -->
-<div style="height: 1px;">&nbsp;</div>
+<div style="height: 1px;" data-name="spacer">&nbsp;</div>
 
 <nav class="navbar border-y-2 transition-colors duration-300">
   <!-- drawer
@@ -32,12 +31,25 @@
 
   <!-- title -->
   <div class="flex-1">
-    <a href="/" aria-current="page" aria-label="Homepage" class="flex-0 btn-ghost btn px-2">
-      <div class="font-title inline-flex text-2xl normal-case text-primary">Todo List</div></a
-    >
+    {#if !$user.isLoggedIn}
+      <a href="/" aria-current="page" aria-label="Homepage" class="flex-0 btn-ghost btn px-2">
+        <div class="font-title inline-flex text-2xl normal-case text-primary">Todo List</div></a
+      >
+    {:else}
+      <a href="/todos" aria-current="page" aria-label="Homepage" class="flex-0 btn-ghost btn px-2">
+        <div class="font-title inline-flex text-2xl normal-case text-primary">Todo List</div></a
+      >
+    {/if}
   </div>
 
   <div class="mr-1 flex-none">
+    <!-- loading spinner -->
+    <span class="pr-2"
+      ><button
+        class="loading btn-ghost btn transition-opacity duration-500 {!$isLoading && 'opacity-0'}"
+      /></span
+    >
+
     <!-- dark mode toggle -->
     <span class="pr-2">
       <DarkModeToggle />
@@ -53,7 +65,7 @@
           <li><a href="/user/login">Login</a></li>
           <li><a href="/user/register">Register</a></li>
         {:else}
-          <!--li><a href="/user">Your account</a></li-->
+          <li><a href="/user">Your account</a></li>
           <li><a href="/user/logout">Logout</a></li>
         {/if}
       </ul>

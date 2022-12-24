@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import { toast } from "@zerodevx/svelte-toast";
 
 import tippy from "tippy.js";
@@ -14,49 +13,64 @@ export async function csrfTokensGet() {
   return await fetch(`${apiUrls.utils}/csrftoken/`, {
     credentials: "include",
   })
-    .then((res) => res.json())
+    .then((response) => response.json())
     .then((data) => data.csrfmiddlewaretoken)
-    .catch((err) => {
-      toastCreateOnError(err); // show error message
-      // throw err; // raise exception
+    .catch((error) => {
+      toastCreateOnError(error); // show error message
+      // throw error; // raise exception
     });
 }
 
-export async function csrfTokenCheck(csrfToken: string) {
-  /** Check the validity of a CSRF token. The function will accept an masked
-   *  token (as in a 'csrfmiddlewaretoken' string) -OR- an unmasked one (as in
-   *  a 'csrftoken' cookie).
-   *  To protect against BREACH attacks, the masked token should be used.
-   */
-  console.log(`Using token: ${csrfToken}`);
-  return await fetch(`${apiUrls.utils}/csrftoken/`, {
-    method: "POST",
-    headers: { "X-CSRFToken": csrfToken },
-    credentials: "include",
-  })
-    .then((res) => res.json())
-    .then((data) => data.message)
-    .catch((err) => {
-      debugger;
-      if (err?.response.status === 403) {
-        toastCreateOnError(
-          err,
-          "We were unable to verify the authenticity of your request. " +
-            "You may need to refresh the page."
-        );
-      } else {
-        toastCreateOnError(err); // show error message
-      }
-    });
-}
+// export async function csrfTokenCheck(csrfToken: string) {
+//   /** Check the validity of a CSRF token. The function will accept an masked
+//    *  token (as in a 'csrfmiddlewaretoken' string) -OR- an unmasked one (as in
+//    *  a 'csrftoken' cookie).
+//    *  To protect against BREACH attacks, the masked token should be used.
+//    */
+//   console.log(`Using token: ${csrfToken}`);
+//   return await fetch(`${apiUrls.utils}/csrftoken/`, {
+//     method: "POST",
+//     headers: { "X-CSRFToken": csrfToken },
+//     credentials: "include",
+//   })
+//     .then((response) => {
+//       if (response.status === 403) {
+//         toastCreate(
+//           "We were unable to verify the authenticity of your request. " +
+//             "You may need to refresh the page.",
+//           "error"
+//         );
+//         return false;
+//       }
+//       return response.json();
+//     })
+//     .then((data) => data.message)
+//     .catch((err) => {
+//       toastCreateOnError(err); // show error message
+//     });
+// }
 
 export async function userAuthStatusCheck(csrfmiddlewaretoken: string, method: string = "GET") {
   const defaultParams = apiRequestParamsBuild(csrfmiddlewaretoken);
   const params: RequestInit = Object.assign(defaultParams, {
     method,
   });
-  return await fetch(`${apiUrls.auth}/check/`, params).then((res) => res.json());
+  return await fetch(`${apiUrls.auth}/check/`, params).then((response) => response.json());
 }
+
+// form
+export const formHelpers = {
+  onError: (errors: any) => {
+    if (Object.keys(errors).filter((fieldName) => fieldName === "non_field_errors").length) {
+      // show error message for *first* non-field error and delete the 'non_field_errors' key
+      toastCreate(errors.non_field_errors[0], "error");
+      delete errors.non_field_errors;
+    } else {
+      toastCreate("An error was detected in the form.", "error");
+    }
+    return errors;
+  },
+};
 
 // toast
 export function toastCreate(message: string, theme: string = "") {
@@ -99,10 +113,10 @@ export function toastCreate(message: string, theme: string = "") {
   toast.push(message, toastTheme);
 }
 
-export function toastCreateOnError(err: ResponseError, message: string = "") {
+export function toastCreateOnError(error: ResponseError, message: string = "") {
   if (!message) {
-    if (err.response) {
-      message = `Error ${err.response.status} (${err.response.statusText})`;
+    if (error.response) {
+      message = `Error ${error.response.status} (${error.response.statusText})`;
     } else {
       message = "Error: Could not connect to API server";
     }
@@ -136,4 +150,10 @@ export function tooltip(node: HTMLElement, options: Record<string, any> | string
       tip.destroy();
     },
   };
+}
+
+/* utility */
+// string
+export function stringCapitalizeFirstLetter(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }

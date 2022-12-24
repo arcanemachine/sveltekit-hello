@@ -1,18 +1,41 @@
 <script type="ts">
   import "/src/css/app.css";
+
+  import { onMount } from "svelte";
+
   import { Navbar, NavbarDrawer } from "$components/base/navbar";
   import { Toast } from "$components/base";
-  import { user } from "$stores";
+  import { apiStore, isLoading, user } from "$stores";
+
+  let appInitialized = false;
+
+  async function init() {
+    $apiStore.schema = await $apiStore.schemaGet();
+  }
+
+  onMount(async () => {
+    $isLoading = true;
+
+    try {
+      await init();
+      appInitialized = true;
+      $isLoading = false;
+    } catch (err) {
+      console.log(err);
+    }
+  });
 </script>
 
 <div class="drawer-mobile drawer">
   <input id="navbar-drawer" type="checkbox" class="drawer-toggle" />
-  <div class="drawer-content flex flex-col items-center justify-center">
+  <div class="drawer-content flex w-full flex-col items-center justify-center">
     {#if !$user.prefs.bottomNavbarEnabled}
       <Navbar />
     {/if}
-    <main class="prose mt-6 h-full">
-      <slot />
+    <main class="prose mx-auto mx-auto mt-6 h-full w-full">
+      {#if appInitialized}
+        <slot />
+      {/if}
     </main>
     {#if $user.prefs.bottomNavbarEnabled}
       <Navbar />
@@ -22,54 +45,3 @@
   <NavbarDrawer />
   <Toast />
 </div>
-
-<style global>
-  /** third-party dependencies **/
-  /* svelte-fa */
-  .svelte-fa {
-    min-width: 16px;
-  }
-
-  /* daisyUI */
-  .checkbox {
-    border-width: 2px !important;
-  }
-
-  /* svelte-toast */
-  :root {
-    --toastContainerTop: auto;
-    --toastContainerRight: 1rem;
-    --toastContainerBottom: 1rem;
-    --toastContainerLeft: auto;
-  }
-
-  /** tags **/
-  a {
-    @apply text-blue-600 hover:text-blue-800;
-  }
-
-  /** components **/
-  .action-links {
-    margin-top: 1rem;
-  }
-
-  .action-links a {
-    display: block;
-    margin-top: 0.5rem;
-    font-size: 1.2rem;
-    text-align: center;
-  }
-
-  .flex-center {
-    justify-content: center;
-    align-items: center;
-  }
-
-  .modal-button-close {
-    @apply btn-secondary btn-sm btn absolute right-0 top-0 rounded-tr-none rounded-br-none rounded-tl-none;
-  }
-
-  .page-title {
-    text-align: center;
-  }
-</style>

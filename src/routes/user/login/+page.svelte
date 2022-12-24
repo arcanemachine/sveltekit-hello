@@ -6,16 +6,21 @@
   import reporter from "@felte/reporter-tippy";
 
   import { CsrfEnsure } from "$components/base";
-  import type { AuthLoginCreateRequest, ResponseError } from "$lib/openapi";
+  import type { AuthLoginCreateRequest } from "$lib/openapi";
   import { apiStore, user } from "$stores";
-  import { csrfTokensGet, toastCreateOnError, toastCreate, userAuthStatusCheck } from "$helpers";
+  import { csrfTokensGet, formHelpers, toastCreate, userAuthStatusCheck } from "$helpers";
+
+  const loginSchema = $apiStore.schema.components.schemas.Login;
+
+  window.deleteme = loginSchema;
 
   // lifecycle
   onMount(async () => {
+    // check if user is already logged in
     if ($user.isLoggedIn) {
       if (!(await userAuthStatusCheck($apiStore.csrfmiddlewaretoken))) {
-        // if authentication cookies are expired, remove the username from localStorage
-        localStorage.removeItem("username");
+        // if authentication cookies are expired, remove frontend auth status
+        user.logout(user);
       } else {
         toastCreate("You are already logged in.");
         goto("/todos");
@@ -27,6 +32,7 @@
   const { form } = createForm({
     extend: reporter(),
     onSubmit: async (values) => {
+      // build params
       const params: AuthLoginCreateRequest = {
         login: {
           username: values.username,
@@ -34,33 +40,45 @@
         },
       };
 
-      $apiStore.apis.auth
-        .authLoginCreate(params, $apiStore.overrides as RequestInit)
-        .then(async () => {
-          $apiStore.csrfmiddlewaretoken = await csrfTokensGet(); // get new CSRF middleware token
-          $user.username = values.username; // save username to user store
-          localStorage.setItem("username", values.username); // save username to localStorage
-          toastCreate("Login successful", "success"); // success message
-          goto("/todos"); // redirect to todos
-        })
-        .catch((err: ResponseError) => {
-          if (err.response.status == 400) {
-            toastCreate("Error: Incorrect username or password", "error");
-          } else {
-            toastCreateOnError(err);
-          }
-        });
+      // get response
+      let response;
+      try {
+        response = await $apiStore.apis.auth.authLoginCreate(
+          params,
+          $apiStore.overrides as RequestInit
+        );
+      } catch (errors: any) {
+        throw JSON.parse(await errors.response.text()); // throw parsed errors
+      }
+
+      return {
+        response,
+        values,
+      };
+    },
+    onSuccess: async (response: any) => {
+      // deconstruct response object
+      const values = response.values;
+      response = response.response;
+
+      $apiStore.csrfmiddlewaretoken = await csrfTokensGet(); // get new CSRF middleware token
+      user.login(user, values.username); // update frontend auth status
+      toastCreate("Login successful", "success"); // success message
+      goto("/todos"); // success URL
+    },
+    onError: (errors: any) => {
+      return formHelpers.onError(errors);
     },
   });
 </script>
 
 <CsrfEnsure />
 
-<section class="prose">
+<section>
   <h1 class="page-title">Login</h1>
 
   <form use:form>
-    <div class="form-control w-full max-w-xs">
+    <div class="form-control mx-auto w-full max-w-xs">
       <label class="label">
         <span class="label-text">Username</span>
       </label>
@@ -73,7 +91,7 @@
       />
     </div>
 
-    <div class="form-control w-full max-w-xs">
+    <div class="form-control mx-auto w-full max-w-xs">
       <label class="label">
         <span class="label-text">Password</span>
       </label>
@@ -86,8 +104,12 @@
       />
     </div>
 
-    <div class="form-control mt-6 w-full max-w-xs">
+    <div class="form-control mx-auto mt-6 w-full max-w-xs">
       <input class="btn-primary btn" type="submit" value="Submit" />
     </div>
   </form>
+
+  <div class="action-links">
+    <a class="block" href="/user/register">Register new Account</a>
+  </div>
 </section>
