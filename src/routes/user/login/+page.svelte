@@ -10,10 +10,6 @@
   import { apiStore, user } from "$stores";
   import { csrfTokensGet, formHelpers, toastCreate, userAuthStatusCheck } from "$helpers";
 
-  const loginSchema = $apiStore.schema.components.schemas.Login;
-
-  window.deleteme = loginSchema;
-
   // lifecycle
   onMount(async () => {
     // check if user is already logged in
@@ -31,7 +27,17 @@
   // form
   const { form } = createForm({
     extend: reporter(),
-    onSubmit: async (values) => {
+    validate: (values: any) => {
+      const errors: any = {};
+
+      // check for common passwords
+      if (values.password && values.password.length < 8) {
+        errors.password = "This password is too short. It must contain at least 8 characters.";
+      }
+
+      return errors;
+    },
+    onSubmit: async (values: any) => {
       // build params
       const params: AuthLoginCreateRequest = {
         login: {
@@ -56,10 +62,10 @@
         values,
       };
     },
-    onSuccess: async (response: any) => {
+    onSuccess: async (res: any) => {
       // deconstruct response object
-      const values = response.values;
-      response = response.response;
+      const values = res.values;
+      res = res.response;
 
       $apiStore.csrfmiddlewaretoken = await csrfTokensGet(); // get new CSRF middleware token
       user.login(user, values.username); // update frontend auth status

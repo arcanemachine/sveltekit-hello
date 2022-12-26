@@ -3,19 +3,23 @@
   import { faTrash } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
 
-  import { TodoDelete } from "$components/todos";
   import { toastCreate, toastCreateOnError, tooltip } from "$helpers";
   import type { TodosPartialUpdateRequest } from "$lib/openapi";
-  import { apiStore, todos, todoFormInputText, todoIdSelected } from "$stores";
+  import {
+    apiStore,
+    todoDeleteModalVisible,
+    todos,
+    todoFormInputText,
+    todoIdSelected,
+  } from "$stores";
 
-  // let todoDeleteModalVisible = false; // data
   $: todosApi = $apiStore.apis.todos; // computed
 
   // lifecycle
   onMount(async () => {
     try {
       $todos = await todosApi.todosList(); // get todos from server
-    } catch (error: any) {
+    } catch (err) {
       toastCreate("Could not fetch todos from the server.", "error"); // show error message
     }
   });
@@ -46,11 +50,11 @@
 
     todosApi
       .todosPartialUpdate(params, $apiStore.overrides)
-      .then((response) => {
-        $todos[todoIndex] = response;
+      .then((res) => {
+        $todos[todoIndex] = res;
       })
-      .catch((error) => {
-        toastCreateOnError(error);
+      .catch((err) => {
+        toastCreateOnError(err);
       });
   }
 </script>
@@ -72,17 +76,21 @@
       </div>
       <div>
         {#if $todoIdSelected === todo.id}
-          <label class="label">
-            <span aria-label="Delete todo">
-              <label for="todo-delete-modal" use:tooltip={"Delete todo"} tabindex="0">
-                <Fa
-                  icon={faTrash}
-                  style="width: 24px; height: 24px"
-                  class="todo-delete-icon cursor-pointer py-[2px] text-red-500"
-                />
-              </label>
-            </span>
-          </label>
+          <button
+            class="p-2"
+            aria-label="Delete todo"
+            on:click={() => {
+              $todoDeleteModalVisible = true;
+            }}
+          >
+            <label for="todo-delete-modal" use:tooltip={"Delete todo"}>
+              <Fa
+                icon={faTrash}
+                style="width: 24px; height: 24px"
+                class="todo-delete-icon cursor-pointer py-[2px] text-red-500"
+              />
+            </label>
+          </button>
         {:else}
           <label class="label" use:tooltip={"Mark completed"}>
             <input
@@ -101,11 +109,6 @@
     <li class="text-center">No todos created...</li>
   {/each}
 </ul>
-
-<!-- modals
-<TodoDelete modalVisible={todoDeleteModalVisible} />
- -->
-<TodoDelete />
 
 <style>
   .todo-delete-icon {

@@ -1,8 +1,7 @@
 <script>
   import { CsrfEnsure } from "$components/base";
   import { TodoDelete, TodoForm, TodoList } from "$components/todos";
-  import { user } from "$stores";
-  import { todoDeleteModalVisible } from "$stores";
+  import { todoDeleteModalVisible, user } from "$stores";
 </script>
 
 <section class="flex h-full flex-col">
@@ -24,6 +23,6 @@
     </section>
 
     <!-- modals -->
-    <TodoDelete modalVisible={$todoDeleteModalVisible} />
+    <TodoDelete />
   {/if}
 </section>

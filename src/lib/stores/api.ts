@@ -70,10 +70,10 @@ export const apiStore: Writable<ApiData> = writable({
 
     try {
       return await fetch("/schema.yml")
-        .then((response) => response.text())
+        .then((res) => res.text())
         .then((text) => yamlParse(text));
     } catch (err) {
-      console.error("Could not load schema.yml. Returned empty object.");
+      console.error("Could not load schema.yml. Returning empty object...");
       return {};
     }
   },

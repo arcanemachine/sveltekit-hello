@@ -5,7 +5,8 @@
   import { z } from "zod";
 
   import { createForm } from "felte";
-  import reporter from "@felte/reporter-tippy";
+  import { default as reporterTippy } from "@felte/reporter-tippy";
+  import { reporter as reporterSvelte, ValidationMessage } from "@felte/reporter-svelte";
 
   import { CsrfEnsure } from "$components/base";
   import type { AuthRegistrationCreateRequest } from "$lib/openapi";
@@ -21,7 +22,6 @@
     password2: registerSchema.properties.password2,
   };
   const sRequired = $apiStore.schema.components.schemas.Register.required;
-  console.log(sProps);
 
   // lifecycle
   onMount(async () => {
@@ -37,26 +37,34 @@
     }
   });
 
-  // form
-  const formSchema = z.object({
-    username: z.string().min(sProps.username.minLength).max(sProps.username.maxLength),
-    email: z.string().email(),
-    password1: z.string(),
-    password2: z.string(),
-  });
-
-  const passwordWarnSchema = z.string().refine((value) => value.length > 8 && true, {
-    message: "Password must contain 8 or more characters",
-  });
-  const warnSchema = z.object({
-    password1: passwordWarnSchema,
-    password2: passwordWarnSchema,
-  });
+  const formSchema = z
+    .object({
+      username: z.string().min(sProps.username.minLength).max(sProps.username.maxLength),
+      email: z.string().email(),
+      password1: z
+        .string()
+        .min(8, "This password is too short. It must contain at least 8 characters."),
+      password2: z
+        .string()
+        .min(8, "This password is too short. It must contain at least 8 characters."),
+    })
+    .refine((data) => data.password1 === data.password2, {
+      message: "The two password fields didn't match.",
+      path: ["password1"],
+    });
 
   const { form } = createForm<z.infer<typeof formSchema>>({
-    extend: reporter(),
-    // extend: [validator({ formSchema }), reporter()],
-    // extend: [reporter(), validator({ warnSchema, level: "warning" })],
+    extend: [validator({ schema: formSchema }), reporterTippy(), reporterSvelte],
+    warn: (values) => {
+      const warnings: any = {};
+
+      // check for common passwords
+      if (values.password1 && ["1234578", "password"].includes(values.password1)) {
+        warnings.password1 = "This password is too common.";
+      }
+
+      return warnings;
+    },
     onSubmit: async (values) => {
       const params: AuthRegistrationCreateRequest = {
         register: {
@@ -112,6 +120,7 @@
       <input
         name="username"
         type="text"
+        placeholder="Your username"
         class="input-bordered input w-full max-w-xs"
         minlength={sProps.username.minLength}
         maxlength={sProps.username.maxLength}
@@ -126,6 +135,7 @@
       <input
         name="email"
         type="email"
+        placeholder="Your email"
         class="input-bordered input w-full max-w-xs"
         required={sRequired.includes("email") || null}
       />
@@ -134,10 +144,15 @@
     <div class="form-control mx-auto w-full max-w-xs">
       <label class="label">
         <span class="label-text">Password</span>
+        <ValidationMessage for="password1" let:messages={message} level="warning">
+          <small class="text-red-500">{message}</small>
+          <small slot="placeholder">&nbsp;</small>
+        </ValidationMessage>
       </label>
       <input
         name="password1"
         type="password"
+        placeholder="Your password"
         class="input-bordered input w-full max-w-xs"
         required={sRequired.includes("password1") || null}
       />
@@ -150,6 +165,7 @@
       <input
         name="password2"
         type="password"
+        placeholder="Re-enter your password"
         class="input-bordered input w-full max-w-xs"
         required={sRequired.includes("password2") || null}
       />

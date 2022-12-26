@@ -1,31 +1,44 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
 
-  import { toastCreate, toastCreateOnError } from "$helpers";
+  import { focusTrap, toastCreate, toastCreateOnError } from "$helpers";
   import type { Todo, TodosDestroyRequest } from "$lib/openapi";
-  import { apiStore, todos, todoFormInputText, todoIdSelected } from "$stores";
+  import {
+    apiStore,
+    todos,
+    todoDeleteModalVisible,
+    todoFormInputText,
+    todoIdSelected,
+  } from "$stores";
 
-  export let modalVisible: boolean; // props
+  let modalEl: HTMLElement;
   $: todosApi = $apiStore.apis.todos; // computed
 
-  // methods
-  function handleKeydown(evt: KeyboardEvent) {
-    if (!modalVisible) return;
-
-    if (evt.key === "Escape") {
-      modalClose();
-    } else if (evt.key === "Enter") {
-      todoDelete();
-    }
-  }
-
+  // lifecycle
   onMount(() => {
     document.body.addEventListener("keydown", handleKeydown);
+    focusTrap(modalEl, { isActiveCallback: () => $todoDeleteModalVisible });
   });
 
   onDestroy(() => {
     document.body.removeEventListener("keydown", handleKeydown);
+    focusTrap(modalEl, { remove: true });
   });
+
+  // methods
+  function handleClickOutside(evt: MouseEvent) {
+    /** Click outside the modal to close it. */
+    if (modalEl == evt.target || modalEl.contains(evt.target as Node)) return;
+    else $todoDeleteModalVisible = false;
+  }
+
+  function handleKeydown(evt: KeyboardEvent) {
+    if (!$todoDeleteModalVisible) return;
+
+    if (evt.key === "Escape") {
+      modalClose();
+    }
+  }
 
   function todoDelete() {
     const params: TodosDestroyRequest = {
@@ -34,8 +47,8 @@
 
     todosApi
       .todosDestroyRaw(params, $apiStore.overrides)
-      .then((response) => {
-        if (response.raw.ok && response.raw.status === 204) {
+      .then((res) => {
+        if (res.raw.ok && res.raw.status === 204) {
           // delete locally
           $todos = $todos.filter((todo: Todo) => todo.id !== $todoIdSelected);
 
@@ -45,24 +58,30 @@
           modalClose();
         } else {
           // show error message
-          toastCreate(`Error ${response.raw.status}: ${response.raw.statusText}`, "error");
+          toastCreate(`Error ${res.raw.status}: ${res.raw.statusText}`, "error");
         }
       })
-      .catch((error) => {
-        toastCreateOnError(error);
+      .catch((err) => {
+        toastCreateOnError(err);
       });
   }
 
   function modalClose() {
-    modalVisible = false;
+    $todoDeleteModalVisible = false;
   }
 </script>
 
-<input type="checkbox" id="todo-delete-modal" class="modal-toggle" bind:checked={modalVisible} />
-
-<div class="modal">
+<div
+  class="modal"
+  bind:this={modalEl}
+  on:click={handleClickOutside}
+  on:keydown={() => {
+    /* work around unnecessary a11y linter warning */
+  }}
+  class:modal-open={$todoDeleteModalVisible}
+>
   <div class="modal-box relative max-w-xs rounded-tr-none">
-    <label for="todo-delete-modal" class="modal-button-close btn-square">✕</label>
+    <button class="modal-button-close btn-square" on:click={modalClose}>✕</button>
 
     <h2 class="mt-2 text-center font-bold">Delete this todo?</h2>
 
