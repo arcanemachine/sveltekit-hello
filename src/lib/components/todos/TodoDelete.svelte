@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
-
-  import { focusTrap, toastCreate, toastCreateOnError } from "$helpers";
+  import { toastCreate, toastCreateOnError } from "$helpers";
   import type { Todo, TodosDestroyRequest } from "$lib/openapi";
   import {
     apiStore,
@@ -12,24 +10,48 @@
   } from "$stores";
 
   let modalEl: HTMLElement;
+  let firstFocusableEl: HTMLElement;
   $: todosApi = $apiStore.apis.todos; // computed
 
-  // lifecycle
-  onMount(() => {
-    document.body.addEventListener("keydown", handleKeydown);
-    focusTrap(modalEl, { isActiveCallback: () => $todoDeleteModalVisible });
-  });
-
-  onDestroy(() => {
-    document.body.removeEventListener("keydown", handleKeydown);
-    focusTrap(modalEl, { remove: true });
-  });
-
   // methods
+  function focusTrap(evt: KeyboardEvent, isActiveCallback?: Function) {
+    if (!isActiveCallback || !isActiveCallback()) return; // halt if the callback returns false
+    if (!modalEl.contains(evt.target as Node)) {
+      // if the modal is not focused, focus it on the first Tab keydown event
+      firstFocusableEl.focus();
+      return;
+    }
+
+    const focusableSelectors = [
+      "a[href]" + ":not([disabled])",
+      "button" + ":not([disabled])",
+      "textarea" + ":not([disabled])",
+      'input[type="text"]' + ":not([disabled])",
+      'input[type="radio"]' + ":not([disabled])",
+      'input[type="checkbox"]' + ":not([disabled])",
+      "select" + ":not([disabled])",
+    ];
+    const focusableEls = modalEl.querySelectorAll(focusableSelectors.join(", "));
+    const lastFocusableEl = focusableEls[focusableEls.length - 1] as HTMLElement;
+
+    if (evt.key === "Tab") {
+      if (!evt.shiftKey) {
+        if (document.activeElement === lastFocusableEl) {
+          evt.preventDefault();
+          firstFocusableEl.focus();
+        }
+      } else {
+        if (document.activeElement === firstFocusableEl) {
+          evt.preventDefault();
+          lastFocusableEl.focus();
+        }
+      }
+    }
+  }
+
   function handleClickOutside(evt: MouseEvent) {
     /** Click outside the modal to close it. */
-    if (modalEl == evt.target || modalEl.contains(evt.target as Node)) return;
-    else $todoDeleteModalVisible = false;
+    if (modalEl == evt.target) modalClose();
   }
 
   function handleKeydown(evt: KeyboardEvent) {
@@ -71,17 +93,22 @@
   }
 </script>
 
+<svelte:window
+  on:keydown={handleKeydown}
+  on:keydown={(evt) => focusTrap(evt, () => $todoDeleteModalVisible)}
+/>
+
 <div
   class="modal"
   bind:this={modalEl}
-  on:click={handleClickOutside}
-  on:keydown={() => {
-    /* work around unnecessary a11y linter warning */
-  }}
   class:modal-open={$todoDeleteModalVisible}
+  on:click={handleClickOutside}
+  on:keydown={() => {}}
 >
   <div class="modal-box relative max-w-xs rounded-tr-none">
-    <button class="modal-button-close btn-square" on:click={modalClose}>✕</button>
+    <button class="modal-button-close btn-square" on:click={modalClose} bind:this={firstFocusableEl}
+      >✕</button
+    >
 
     <h2 class="mt-2 text-center font-bold">Delete this todo?</h2>
 

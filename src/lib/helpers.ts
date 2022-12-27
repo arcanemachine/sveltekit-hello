@@ -58,61 +58,6 @@ export async function userAuthStatusCheck(csrfmiddlewaretoken: string, method: s
   return await fetch(`${apiUrls.auth}/check/`, params).then((response) => response.json());
 }
 
-// focus trap
-function focusTrapHandler(
-  evt: KeyboardEvent,
-  options: any,
-  firstFocusableEl: HTMLElement,
-  lastFocusableEl: HTMLElement
-) {
-  /** cycle through focusable options using Tab key (with Shift key modifier) */
-  console.log("focusTrapHandler()");
-
-  // optionally check whether or not to process event handler logic
-  if (options.isActiveCallback && !options.isActiveCallback()) return;
-
-  if (evt.key === "Tab") {
-    if (!evt.shiftKey) {
-      if (document.activeElement === lastFocusableEl) {
-        evt.preventDefault();
-        firstFocusableEl.focus();
-      }
-    } else {
-      if (document.activeElement === firstFocusableEl) {
-        evt.preventDefault();
-        lastFocusableEl.focus();
-      }
-    }
-  }
-}
-
-export function focusTrap(
-  elt: HTMLElement,
-  options: any = { remove: false, isActiveCallback: undefined }
-) {
-  const focusableSelectors = [
-    "a[href]" + ":not([disabled])",
-    "button" + ":not([disabled])",
-    "textarea" + ":not([disabled])",
-    'input[type="text"]' + ":not([disabled])",
-    'input[type="radio"]' + ":not([disabled])",
-    'input[type="checkbox"]' + ":not([disabled])",
-    "select" + ":not([disabled])",
-  ];
-  const focusableEls = elt.querySelectorAll(focusableSelectors.join(", "));
-  const firstFocusableEl = focusableEls[0] as HTMLElement;
-  const lastFocusableEl = focusableEls[focusableEls.length - 1] as HTMLElement;
-
-  if (!options.remove) {
-    console.log("creating event handler...");
-    window.addEventListener("keydown", focusTrapHandler);
-    );
-  } else {
-    console.log("removing event handler...");
-    window.removeEventListener("keydown", focusTrapHandler);
-  }
-}
-
 // form
 export const formHelpers = {
   onError: (errors: any) => {
