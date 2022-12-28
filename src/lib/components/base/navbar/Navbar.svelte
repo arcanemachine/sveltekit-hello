@@ -31,15 +31,14 @@
 
   <!-- title -->
   <div class="flex-1">
-    {#if !$user.isLoggedIn}
-      <a href="/" aria-current="page" aria-label="Homepage" class="flex-0 btn-ghost btn px-2">
-        <div class="font-title inline-flex text-2xl normal-case text-primary">Todo List</div></a
-      >
-    {:else}
-      <a href="/todos" aria-current="page" aria-label="Homepage" class="flex-0 btn-ghost btn px-2">
-        <div class="font-title inline-flex text-2xl normal-case text-primary">Todo List</div></a
-      >
-    {/if}
+    <a
+      href={!$user.isLoggedIn ? "/" : "/todos"}
+      aria-current="page"
+      aria-label="Homepage"
+      class="flex-0 btn-ghost btn px-2"
+    >
+      <div class="font-title inline-flex text-2xl normal-case text-primary">Todo List</div></a
+    >
   </div>
 
   <div class="mr-1 flex-none">
@@ -65,7 +64,7 @@
           <li><a href="/user/login">Login</a></li>
           <li><a href="/user/register">Register</a></li>
         {:else}
-          <li><a href="/user">Your account</a></li>
+          <li><a href="/user">Your profile</a></li>
           <li><a href="/user/logout">Logout</a></li>
         {/if}
       </ul>

@@ -1,21 +1,15 @@
 <script lang="ts">
   import { toastCreate, toastCreateOnError } from "$helpers";
   import type { Todo, TodosDestroyRequest } from "$lib/openapi";
-  import {
-    apiStore,
-    todos,
-    todoDeleteModalVisible,
-    todoFormInputText,
-    todoIdSelected,
-  } from "$stores";
+  import { api, todos, todoDeleteModalVisible, todoFormInputText, todoIdSelected } from "$stores";
 
   let modalEl: HTMLElement;
   let firstFocusableEl: HTMLElement;
-  $: todosApi = $apiStore.apis.todos; // computed
+  $: todosApi = $api.apis.todos; // computed
 
   // methods
   function focusTrap(evt: KeyboardEvent, isActiveCallback?: Function) {
-    if (!isActiveCallback || !isActiveCallback()) return; // halt if the callback returns false
+    if (!isActiveCallback || !isActiveCallback()) return; // halt if callback result is falsy
     if (!modalEl.contains(evt.target as Node)) {
       // if the modal is not focused, focus it on the first Tab keydown event
       firstFocusableEl.focus();
@@ -68,14 +62,14 @@
     };
 
     todosApi
-      .todosDestroyRaw(params, $apiStore.overrides)
-      .then((res) => {
+      .todosDestroyRaw(params, $api.overrides)
+      .then((res: any) => {
         if (res.raw.ok && res.raw.status === 204) {
-          // delete locally
+          // remove item locally
           $todos = $todos.filter((todo: Todo) => todo.id !== $todoIdSelected);
 
           $todoFormInputText = ""; // reset form input text
-          $todoIdSelected = 0; // reset selected item
+          $todoIdSelected = 0; // reset selected item ID
           toastCreate("Todo deleted successfully", "success"); // success message
           modalClose();
         } else {
@@ -83,7 +77,7 @@
           toastCreate(`Error ${res.raw.status}: ${res.raw.statusText}`, "error");
         }
       })
-      .catch((err) => {
+      .catch((err: any) => {
         toastCreateOnError(err);
       });
   }

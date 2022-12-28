@@ -2,51 +2,12 @@ import type { Writable } from "svelte/store";
 import { writable } from "svelte/store";
 import { parse as yamlParse } from "yaml";
 
-import { Configuration, TodosApi, AuthApi } from "$lib/openapi";
+import { apiHost, apiUrls } from "$constants";
+import { apiRequestParamsBuild } from "$helpers";
+import { AuthApi, Configuration, TodosApi } from "$lib/openapi";
+import type { Api } from "$types";
 
-const apiHost = `${location.protocol}//${location.host}`;
-
-type ApiUrls = {
-  root: string;
-  auth: string;
-  utils: string;
-};
-
-export const apiUrls: ApiUrls = {
-  root: `${apiHost}/api`,
-  auth: `${apiHost}/api/auth`,
-  utils: `${apiHost}/api/utils`,
-};
-
-export const apiRequestParamsBuild = (csrfmiddlewaretoken: string) => {
-  return {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrfmiddlewaretoken,
-      mode: "same-origin",
-    },
-  } as RequestInit;
-};
-
-type ApiApis = {
-  todos: TodosApi;
-  auth: AuthApi;
-};
-
-type ApiData = {
-  host: string;
-  csrfmiddlewaretoken: string;
-  apis: ApiApis;
-  overrides: RequestInit;
-  schema?: any;
-  schemaGet: Function;
-  urls: ApiUrls;
-  // isLoading: boolean;
-  // dispatchApiRequest: Function;
-};
-
-export const apiStore: Writable<ApiData> = writable({
+export const api: Writable<Api> = writable({
   host: apiHost,
   csrfmiddlewaretoken: "",
   apis: {

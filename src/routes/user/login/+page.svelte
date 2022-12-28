@@ -6,22 +6,19 @@
   import reporter from "@felte/reporter-tippy";
 
   import { CsrfEnsure } from "$components/base";
+  import { csrfTokensGet, formHelpers, toastCreate } from "$helpers";
+  import { logoutRequired } from "$helpers/user";
   import type { AuthLoginCreateRequest } from "$lib/openapi";
-  import { apiStore, user } from "$stores";
-  import { csrfTokensGet, formHelpers, toastCreate, userAuthStatusCheck } from "$helpers";
+  import { api, user } from "$stores";
 
   // lifecycle
   onMount(async () => {
-    // check if user is already logged in
-    if ($user.isLoggedIn) {
-      if (!(await userAuthStatusCheck($apiStore.csrfmiddlewaretoken))) {
-        // if authentication cookies are expired, remove frontend auth status
-        user.logout(user);
-      } else {
-        toastCreate("You are already logged in.");
-        goto("/todos");
-      }
-    }
+    const loggedInCallback = () => {
+      toastCreate("You are already logged in.");
+      goto("/todos");
+    };
+
+    logoutRequired(loggedInCallback);
   });
 
   // form
@@ -49,10 +46,7 @@
       // get response
       let response;
       try {
-        response = await $apiStore.apis.auth.authLoginCreate(
-          params,
-          $apiStore.overrides as RequestInit
-        );
+        response = await $api.apis.auth.authLoginCreate(params, $api.overrides as RequestInit);
       } catch (errors: any) {
         throw JSON.parse(await errors.response.text()); // throw parsed errors
       }
@@ -67,7 +61,7 @@
       const values = res.values;
       res = res.response;
 
-      $apiStore.csrfmiddlewaretoken = await csrfTokensGet(); // get new CSRF middleware token
+      $api.csrfmiddlewaretoken = await csrfTokensGet(); // get new CSRF middleware token
       user.login(user, values.username); // update frontend auth status
       toastCreate("Login successful", "success"); // success message
       goto("/todos"); // success URL
@@ -78,44 +72,46 @@
   });
 </script>
 
-<CsrfEnsure />
+{#if !$user.isLoggedIn}
+  <CsrfEnsure />
 
-<section>
-  <h1 class="page-title">Login</h1>
+  <section>
+    <h1 class="page-title">Login</h1>
 
-  <form use:form>
-    <div class="form-control mx-auto w-full max-w-xs">
-      <label class="label">
-        <span class="label-text">Username</span>
-      </label>
-      <input
-        type="text"
-        name="username"
-        placeholder="Your username"
-        class="input-bordered input w-full max-w-xs"
-        required
-      />
+    <form use:form>
+      <div class="form-control mx-auto w-full max-w-xs">
+        <label class="label">
+          <span class="label-text">Username</span>
+        </label>
+        <input
+          type="text"
+          name="username"
+          placeholder="Your username"
+          class="input-bordered input w-full max-w-xs"
+          required
+        />
+      </div>
+
+      <div class="form-control mx-auto w-full max-w-xs">
+        <label class="label">
+          <span class="label-text">Password</span>
+        </label>
+        <input
+          type="password"
+          name="password"
+          placeholder="Your password"
+          class="input-bordered input w-full max-w-xs"
+          required
+        />
+      </div>
+
+      <div class="form-control mx-auto mt-6 w-full max-w-xs">
+        <input class="btn-primary btn" type="submit" value="Submit" />
+      </div>
+    </form>
+
+    <div class="action-links">
+      <a class="block" href="/user/register">Register new account</a>
     </div>
-
-    <div class="form-control mx-auto w-full max-w-xs">
-      <label class="label">
-        <span class="label-text">Password</span>
-      </label>
-      <input
-        type="password"
-        name="password"
-        placeholder="Your password"
-        class="input-bordered input w-full max-w-xs"
-        required
-      />
-    </div>
-
-    <div class="form-control mx-auto mt-6 w-full max-w-xs">
-      <input class="btn-primary btn" type="submit" value="Submit" />
-    </div>
-  </form>
-
-  <div class="action-links">
-    <a class="block" href="/user/register">Register new Account</a>
-  </div>
-</section>
+  </section>
+{/if}

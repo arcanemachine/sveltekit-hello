@@ -3,17 +3,14 @@
   import { onMount } from "svelte";
 
   import { CsrfEnsure } from "$components/base";
-  import type { ResponseError } from "$lib/openapi";
-  import { apiStore, todos, user } from "$stores";
   import { toastCreateOnError, toastCreate } from "$helpers";
+  import { loginRequired } from "$helpers/user";
+  import type { ResponseError } from "$lib/openapi";
+  import { api, todos, user } from "$stores";
 
   // lifecycle
   onMount(() => {
-    if (!$user.isLoggedIn) {
-      // if user is not logged in, show info message and redirect to home page
-      toastCreate("You are already logged out.", "info");
-      goto("/");
-    }
+    loginRequired();
   });
 
   // methods
@@ -23,30 +20,32 @@
   }
 
   function logoutConfirm() {
-    $apiStore.apis.auth
-      .authLogoutCreate($apiStore.overrides as RequestInit)
+    $api.apis.auth
+      .authLogoutCreate($api.overrides as RequestInit)
       .then(() => {
         user.logout(user); // log the user out
         todos.reset(); // reset todos
-        toastCreate("Logout successful", "success"); // success message
 
-        goto("/"); // redirect to homepage
+        toastCreate("Logout successful", "success"); // success message
+        goto("/", { replaceState: true }); // success url
       })
-      .catch((error: ResponseError) => {
-        toastCreateOnError(error);
+      .catch((err: ResponseError) => {
+        toastCreateOnError(err);
       });
   }
 </script>
 
-<CsrfEnsure />
+{#if $user.isLoggedIn}
+  <CsrfEnsure />
 
-<section class="text-center">
-  <h1 class="page-title">Logout</h1>
+  <section class="text-center">
+    <h1 class="page-title">Logout</h1>
 
-  <h4>Are you sure to want to log out?</h4>
+    <h4>Are you sure to want to log out?</h4>
 
-  <section class="action-links">
-    <button class="btn-primary btn block w-full" on:click={logoutConfirm}>Yes</button>
-    <button class="btn-secondary btn block w-full" on:click={logoutCancel}>No</button>
+    <section class="action-links">
+      <button class="btn-primary btn block w-full" on:click={logoutConfirm}>Yes</button>
+      <button class="btn-secondary btn block w-full" on:click={logoutCancel}>No</button>
+    </section>
   </section>
-</section>
+{/if}

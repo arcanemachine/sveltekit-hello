@@ -1,15 +1,26 @@
 import { toast } from "@zerodevx/svelte-toast";
-
 import tippy from "tippy.js";
-import "tippy.js/dist/tippy.css"; // optional for styling
+import "tippy.js/dist/tippy.css";
 
-import { apiRequestParamsBuild, apiUrls } from "$stores";
-import type { ResponseError } from "./openapi";
+import { apiUrls } from "$constants";
+import type { ResponseError } from "$lib/openapi";
 
-/* API */
-// auth
-export async function csrfTokensGet() {
-  /** Get a 'csrftoken' cookie, and return a 'csrfmiddlewaretoken' string. */
+// export * as user from "$helpers/user";
+
+// api
+export function apiRequestParamsBuild(csrfmiddlewaretoken: string): any {
+  return {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfmiddlewaretoken,
+      mode: "same-origin",
+    },
+  } as RequestInit;
+}
+
+export async function csrfTokensGet(): Promise<string> {
+  /** Get a CSRF cookie from the server, and return a masked CSRF token. */
   return await fetch(`${apiUrls.utils}/csrftoken/`, {
     credentials: "include",
   })
@@ -17,7 +28,7 @@ export async function csrfTokensGet() {
     .then((data) => data.csrfmiddlewaretoken)
     .catch((error) => {
       toastCreateOnError(error); // show error message
-      // throw error; // raise exception
+      return "";
     });
 }
 
@@ -50,16 +61,18 @@ export async function csrfTokensGet() {
 //     });
 // }
 
-export async function userAuthStatusCheck(csrfmiddlewaretoken: string, method: string = "GET") {
+export async function userAuthStatusCheck(
+  csrfmiddlewaretoken: string,
+  method: string = "GET"
+): Promise<boolean> {
   const defaultParams = apiRequestParamsBuild(csrfmiddlewaretoken);
   const params: RequestInit = Object.assign(defaultParams, {
     method,
   });
   return await fetch(`${apiUrls.auth}/check/`, params).then((response) => response.json());
 }
-
 // form
-export const formHelpers = {
+export const formHelpers: any = {
   onError: (errors: any) => {
     if (Object.keys(errors).filter((fieldName) => fieldName === "non_field_errors").length) {
       // show error message for *first* non-field error and delete the 'non_field_errors' key
@@ -73,7 +86,7 @@ export const formHelpers = {
 };
 
 // toast
-export function toastCreate(message: string, theme: string = "") {
+export function toastCreate(message: string, theme: string = "info"): void {
   let toastTheme: object = {};
 
   if (theme === "info") {
@@ -113,7 +126,7 @@ export function toastCreate(message: string, theme: string = "") {
   toast.push(message, toastTheme);
 }
 
-export function toastCreateOnError(err: ResponseError, message: string = "") {
+export function toastCreateOnError(err: ResponseError, message: string = ""): void {
   if (!message) {
     if (err.response) {
       message = `Error ${err.response.status} (${err.response.statusText})`;
@@ -126,7 +139,7 @@ export function toastCreateOnError(err: ResponseError, message: string = "") {
 }
 
 // tooltip
-export function tooltip(node: HTMLElement, options: Record<string, any> | string = "") {
+export function tooltip(node: HTMLElement, options: Record<string, any> | string = ""): any {
   const defaultOptions = {
     delay: [750, null],
     hideOnClick: true,

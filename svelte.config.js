@@ -7,6 +7,7 @@ const config = {
     adapter: adapter(),
     alias: {
       $components: "src/lib/components",
+      $constants: "src/lib/constants",
       $helpers: "src/lib/helpers",
       $stores: "src/lib/stores",
       $types: "src/lib/types",
@@ -18,8 +19,8 @@ const config = {
     }),
   ],
   onwarn: (warning, handler) => {
-    if (warning.code === "a11y-label-has-associated-control") return;
-    if (warning.code === "a11y-no-noninteractive-tabindex") return;
+    // if (warning.code === "a11y-label-has-associated-control") return;
+    // if (warning.code === "a11y-no-noninteractive-tabindex") return;
     handler(warning);
   },
   // vitePlugin: {

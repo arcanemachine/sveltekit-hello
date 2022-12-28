@@ -1,9 +1,9 @@
 <script lang="ts">
   import { toastCreate } from "$helpers";
   import type { TodosCreateRequest, TodosPartialUpdateRequest } from "$lib/openapi";
-  import { apiStore, todos, todoFormInputText, todoIdSelected } from "$stores";
+  import { api, todos, todoFormInputText, todoIdSelected } from "$stores";
 
-  $: todosApi = $apiStore.apis.todos; // computed
+  $: todosApi = $api.apis.todos; // computed
 
   // methods
   function inputHandleKeypress(evt: KeyboardEvent) {
@@ -27,7 +27,7 @@
       },
     };
 
-    const todo = await $apiStore.apis.todos.todosCreate(params, $apiStore.overrides);
+    const todo = await $api.apis.todos.todosCreate(params, $api.overrides);
 
     // add item to the list
     $todos = [...$todos, todo];
@@ -44,7 +44,7 @@
       },
     };
 
-    await todosApi.todosPartialUpdate(params, $apiStore.overrides);
+    await todosApi.todosPartialUpdate(params, $api.overrides);
 
     const todoIndex = $todos.indexOf($todos.filter((todo) => todo.id === $todoIdSelected)[0]);
     $todos[todoIndex].content = $todoFormInputText; // update item
