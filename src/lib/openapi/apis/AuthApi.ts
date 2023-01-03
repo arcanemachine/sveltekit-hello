@@ -96,7 +96,7 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
      */
-    async authLoginCreateRaw(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Token>> {
+    async authLoginCreateRaw(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Login>> {
         if (requestParameters.login === null || requestParameters.login === undefined) {
             throw new runtime.RequiredError('login','Required parameter requestParameters.login was null or undefined when calling authLoginCreate.');
         }
@@ -119,13 +119,13 @@ export class AuthApi extends runtime.BaseAPI {
             body: LoginToJSON(requestParameters.login),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TokenFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => LoginFromJSON(jsonValue));
     }
 
     /**
      * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
      */
-    async authLoginCreate(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Token> {
+    async authLoginCreate(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Login> {
         const response = await this.authLoginCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }

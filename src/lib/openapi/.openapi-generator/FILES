@@ -1,8 +1,10 @@
 .openapi-generator-ignore
 apis/AuthApi.ts
 apis/TodosApi.ts
+apis/UtilsApi.ts
 apis/index.ts
 index.ts
+models/Csrfmiddlewaretoken.ts
 models/Login.ts
 models/PasswordChange.ts
 models/PasswordReset.ts
