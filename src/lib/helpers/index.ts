@@ -21,7 +21,7 @@ export function apiRequestParamsBuild(csrfmiddlewaretoken: string): any {
 
 export async function csrfTokensGet(): Promise<string> {
   /** Get a CSRF cookie from the server, and return a masked CSRF token. */
-  return await fetch(`${apiUrls.utils}/csrftoken/`, {
+  return await fetch(`${apiUrls.utils}/csrfmiddlewaretoken/`, {
     credentials: "include",
   })
     .then((response) => response.json())
