@@ -4,6 +4,7 @@ apis/TodosApi.ts
 apis/UtilsApi.ts
 apis/index.ts
 index.ts
+models/AuthToken.ts
 models/Csrfmiddlewaretoken.ts
 models/Login.ts
 models/PasswordChange.ts

@@ -8,7 +8,7 @@
   import { CsrfEnsure } from "$components/base";
   import { csrfTokensGet, formHelpers, toastCreate } from "$helpers";
   import { logoutRequired } from "$helpers/user";
-  import type { AuthLoginCreateRequest } from "$lib/openapi";
+  import type { AuthLoginSessionCreateRequest } from "$lib/openapi";
   import { api, user } from "$stores";
 
   // lifecycle
@@ -36,7 +36,7 @@
     },
     onSubmit: async (values: any) => {
       // build params
-      const params: AuthLoginCreateRequest = {
+      const params: AuthLoginSessionCreateRequest = {
         login: {
           username: values.username,
           password: values.password,
@@ -46,7 +46,10 @@
       // get response
       let response;
       try {
-        response = await $api.apis.auth.authLoginCreate(params, $api.overrides as RequestInit);
+        response = await $api.apis.auth.authLoginSessionCreate(
+          params,
+          $api.overrides as RequestInit
+        );
       } catch (errors: any) {
         throw JSON.parse(await errors.response.text()); // throw parsed errors
       }
@@ -67,7 +70,7 @@
       goto("/todos"); // success URL
     },
     onError: (errors: any) => {
-      return formHelpers.onError(errors);
+      return formHelpers.onError(errors, "Invalid username or password");
     },
   });
 </script>

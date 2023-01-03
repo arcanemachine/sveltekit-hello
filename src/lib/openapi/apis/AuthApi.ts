@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  AuthToken,
   Login,
   PasswordChange,
   PasswordReset,
@@ -28,6 +29,8 @@ import type {
   VerifyEmail,
 } from '../models';
 import {
+    AuthTokenFromJSON,
+    AuthTokenToJSON,
     LoginFromJSON,
     LoginToJSON,
     PasswordChangeFromJSON,
@@ -54,6 +57,16 @@ import {
 
 export interface AuthLoginCreateRequest {
     login: Login;
+}
+
+export interface AuthLoginSessionCreateRequest {
+    login: Login;
+}
+
+export interface AuthLoginTokenCreateRequest {
+    username: string;
+    password: string;
+    token: string;
 }
 
 export interface AuthPasswordChangeCreateRequest {
@@ -96,7 +109,7 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
      */
-    async authLoginCreateRaw(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Login>> {
+    async authLoginCreateRaw(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Token>> {
         if (requestParameters.login === null || requestParameters.login === undefined) {
             throw new runtime.RequiredError('login','Required parameter requestParameters.login was null or undefined when calling authLoginCreate.');
         }
@@ -119,14 +132,120 @@ export class AuthApi extends runtime.BaseAPI {
             body: LoginToJSON(requestParameters.login),
         }, initOverrides);
 
+        return new runtime.JSONApiResponse(response, (jsonValue) => TokenFromJSON(jsonValue));
+    }
+
+    /**
+     * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
+     */
+    async authLoginCreate(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Token> {
+        const response = await this.authLoginCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
+     */
+    async authLoginSessionCreateRaw(requestParameters: AuthLoginSessionCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Login>> {
+        if (requestParameters.login === null || requestParameters.login === undefined) {
+            throw new runtime.RequiredError('login','Required parameter requestParameters.login was null or undefined when calling authLoginSessionCreate.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // tokenAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/api/auth/login/session/`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: LoginToJSON(requestParameters.login),
+        }, initOverrides);
+
         return new runtime.JSONApiResponse(response, (jsonValue) => LoginFromJSON(jsonValue));
     }
 
     /**
      * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
      */
-    async authLoginCreate(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Login> {
-        const response = await this.authLoginCreateRaw(requestParameters, initOverrides);
+    async authLoginSessionCreate(requestParameters: AuthLoginSessionCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Login> {
+        const response = await this.authLoginSessionCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async authLoginTokenCreateRaw(requestParameters: AuthLoginTokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthToken>> {
+        if (requestParameters.username === null || requestParameters.username === undefined) {
+            throw new runtime.RequiredError('username','Required parameter requestParameters.username was null or undefined when calling authLoginTokenCreate.');
+        }
+
+        if (requestParameters.password === null || requestParameters.password === undefined) {
+            throw new runtime.RequiredError('password','Required parameter requestParameters.password was null or undefined when calling authLoginTokenCreate.');
+        }
+
+        if (requestParameters.token === null || requestParameters.token === undefined) {
+            throw new runtime.RequiredError('token','Required parameter requestParameters.token was null or undefined when calling authLoginTokenCreate.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // tokenAuth authentication
+        }
+
+        const consumes: runtime.Consume[] = [
+            { contentType: 'application/x-www-form-urlencoded' },
+            { contentType: 'multipart/form-data' },
+            { contentType: 'application/json' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters.username !== undefined) {
+            formParams.append('username', requestParameters.username as any);
+        }
+
+        if (requestParameters.password !== undefined) {
+            formParams.append('password', requestParameters.password as any);
+        }
+
+        if (requestParameters.token !== undefined) {
+            formParams.append('token', requestParameters.token as any);
+        }
+
+        const response = await this.request({
+            path: `/api/auth/login/token/`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthTokenFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async authLoginTokenCreate(requestParameters: AuthLoginTokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthToken> {
+        const response = await this.authLoginTokenCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

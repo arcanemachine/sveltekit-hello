@@ -1,7 +1,19 @@
 import type { Writable } from "svelte/store";
 import type { AuthApi, Todo, TodosApi } from "$lib/openapi";
 
-export type ApiApis = {
+export type Api = {
+  host: string;
+  csrfmiddlewaretoken: string;
+  apis: Apis;
+  overrides: RequestInit;
+  schema?: any;
+  schemaGet(): Function;
+  urls: ApiUrls;
+  // isLoading: boolean;
+  // dispatchApiRequest: Function;
+};
+
+export type Apis = {
   todos: TodosApi;
   auth: AuthApi;
 };
@@ -10,18 +22,6 @@ export type ApiUrls = {
   root: string;
   auth: string;
   utils: string;
-};
-
-export type Api = {
-  host: string;
-  csrfmiddlewaretoken: string;
-  apis: ApiApis;
-  overrides: RequestInit;
-  schema?: any;
-  schemaGet(): Function;
-  urls: ApiUrls;
-  // isLoading: boolean;
-  // dispatchApiRequest: Function;
 };
 
 export type User = {

@@ -71,6 +71,7 @@ export async function userAuthStatusCheck(
   });
   return await fetch(`${apiUrls.auth}/check/`, params).then((response) => response.json());
 }
+
 // form
 export const formHelpers: any = {
   onError: (errors: any) => {

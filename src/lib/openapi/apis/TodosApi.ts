@@ -70,7 +70,7 @@ export class TodosApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/todos`,
+            path: `/api/todos/`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -103,7 +103,7 @@ export class TodosApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/todos/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            path: `/api/todos/{id}/`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -130,7 +130,7 @@ export class TodosApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/todos`,
+            path: `/api/todos/`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -164,7 +164,7 @@ export class TodosApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/todos/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            path: `/api/todos/{id}/`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -197,7 +197,7 @@ export class TodosApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/todos/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            path: `/api/todos/{id}/`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -235,7 +235,7 @@ export class TodosApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/todos/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            path: `/api/todos/{id}/`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
