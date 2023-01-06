@@ -16,32 +16,32 @@ import { exists, mapValues } from '../runtime';
 /**
  * Serializer for requesting a password reset e-mail.
  * @export
- * @interface PasswordReset
+ * @interface PasswordResetRequest
  */
-export interface PasswordReset {
+export interface PasswordResetRequest {
     /**
      * 
      * @type {string}
-     * @memberof PasswordReset
+     * @memberof PasswordResetRequest
      */
     email: string;
 }
 
 /**
- * Check if a given object implements the PasswordReset interface.
+ * Check if a given object implements the PasswordResetRequest interface.
  */
-export function instanceOfPasswordReset(value: object): boolean {
+export function instanceOfPasswordResetRequest(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "email" in value;
 
     return isInstance;
 }
 
-export function PasswordResetFromJSON(json: any): PasswordReset {
-    return PasswordResetFromJSONTyped(json, false);
+export function PasswordResetRequestFromJSON(json: any): PasswordResetRequest {
+    return PasswordResetRequestFromJSONTyped(json, false);
 }
 
-export function PasswordResetFromJSONTyped(json: any, ignoreDiscriminator: boolean): PasswordReset {
+export function PasswordResetRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PasswordResetRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -51,7 +51,7 @@ export function PasswordResetFromJSONTyped(json: any, ignoreDiscriminator: boole
     };
 }
 
-export function PasswordResetToJSON(value?: PasswordReset | null): any {
+export function PasswordResetRequestToJSON(value?: PasswordResetRequest | null): any {
     if (value === undefined) {
         return undefined;
     }

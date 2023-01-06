@@ -14,55 +14,41 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * Serializer for confirming a password reset attempt.
+ * 
  * @export
- * @interface PasswordResetConfirm
+ * @interface PasswordChangeRequest
  */
-export interface PasswordResetConfirm {
+export interface PasswordChangeRequest {
     /**
      * 
      * @type {string}
-     * @memberof PasswordResetConfirm
+     * @memberof PasswordChangeRequest
      */
     newPassword1: string;
     /**
      * 
      * @type {string}
-     * @memberof PasswordResetConfirm
+     * @memberof PasswordChangeRequest
      */
     newPassword2: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PasswordResetConfirm
-     */
-    uid: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PasswordResetConfirm
-     */
-    token: string;
 }
 
 /**
- * Check if a given object implements the PasswordResetConfirm interface.
+ * Check if a given object implements the PasswordChangeRequest interface.
  */
-export function instanceOfPasswordResetConfirm(value: object): boolean {
+export function instanceOfPasswordChangeRequest(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "newPassword1" in value;
     isInstance = isInstance && "newPassword2" in value;
-    isInstance = isInstance && "uid" in value;
-    isInstance = isInstance && "token" in value;
 
     return isInstance;
 }
 
-export function PasswordResetConfirmFromJSON(json: any): PasswordResetConfirm {
-    return PasswordResetConfirmFromJSONTyped(json, false);
+export function PasswordChangeRequestFromJSON(json: any): PasswordChangeRequest {
+    return PasswordChangeRequestFromJSONTyped(json, false);
 }
 
-export function PasswordResetConfirmFromJSONTyped(json: any, ignoreDiscriminator: boolean): PasswordResetConfirm {
+export function PasswordChangeRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PasswordChangeRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -70,12 +56,10 @@ export function PasswordResetConfirmFromJSONTyped(json: any, ignoreDiscriminator
         
         'newPassword1': json['new_password1'],
         'newPassword2': json['new_password2'],
-        'uid': json['uid'],
-        'token': json['token'],
     };
 }
 
-export function PasswordResetConfirmToJSON(value?: PasswordResetConfirm | null): any {
+export function PasswordChangeRequestToJSON(value?: PasswordChangeRequest | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -86,8 +70,6 @@ export function PasswordResetConfirmToJSON(value?: PasswordResetConfirm | null):
         
         'new_password1': value.newPassword1,
         'new_password2': value.newPassword2,
-        'uid': value.uid,
-        'token': value.token,
     };
 }
 

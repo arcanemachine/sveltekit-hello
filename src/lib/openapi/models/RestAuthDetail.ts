@@ -24,7 +24,7 @@ export interface RestAuthDetail {
      * @type {string}
      * @memberof RestAuthDetail
      */
-    readonly detail: string;
+    readonly detail?: string;
 }
 
 /**
@@ -32,7 +32,6 @@ export interface RestAuthDetail {
  */
 export function instanceOfRestAuthDetail(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "detail" in value;
 
     return isInstance;
 }
@@ -47,7 +46,7 @@ export function RestAuthDetailFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'detail': json['detail'],
+        'detail': !exists(json, 'detail') ? undefined : json['detail'],
     };
 }
 

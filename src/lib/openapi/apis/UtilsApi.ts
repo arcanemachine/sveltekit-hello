@@ -16,14 +16,17 @@
 import * as runtime from '../runtime';
 import type {
   Csrfmiddlewaretoken,
+  CsrfmiddlewaretokenRequest,
 } from '../models';
 import {
     CsrfmiddlewaretokenFromJSON,
     CsrfmiddlewaretokenToJSON,
+    CsrfmiddlewaretokenRequestFromJSON,
+    CsrfmiddlewaretokenRequestToJSON,
 } from '../models';
 
 export interface UtilsCsrfmiddlewaretokenCreateRequest {
-    csrfmiddlewaretoken: Csrfmiddlewaretoken;
+    csrfmiddlewaretokenRequest: CsrfmiddlewaretokenRequest;
 }
 
 /**
@@ -34,8 +37,8 @@ export class UtilsApi extends runtime.BaseAPI {
     /**
      */
     async utilsCsrfmiddlewaretokenCreateRaw(requestParameters: UtilsCsrfmiddlewaretokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Csrfmiddlewaretoken>> {
-        if (requestParameters.csrfmiddlewaretoken === null || requestParameters.csrfmiddlewaretoken === undefined) {
-            throw new runtime.RequiredError('csrfmiddlewaretoken','Required parameter requestParameters.csrfmiddlewaretoken was null or undefined when calling utilsCsrfmiddlewaretokenCreate.');
+        if (requestParameters.csrfmiddlewaretokenRequest === null || requestParameters.csrfmiddlewaretokenRequest === undefined) {
+            throw new runtime.RequiredError('csrfmiddlewaretokenRequest','Required parameter requestParameters.csrfmiddlewaretokenRequest was null or undefined when calling utilsCsrfmiddlewaretokenCreate.');
         }
 
         const queryParameters: any = {};
@@ -53,7 +56,7 @@ export class UtilsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: CsrfmiddlewaretokenToJSON(requestParameters.csrfmiddlewaretoken),
+            body: CsrfmiddlewaretokenRequestToJSON(requestParameters.csrfmiddlewaretokenRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CsrfmiddlewaretokenFromJSON(jsonValue));

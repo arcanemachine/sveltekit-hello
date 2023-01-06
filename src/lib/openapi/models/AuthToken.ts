@@ -24,19 +24,7 @@ export interface AuthToken {
      * @type {string}
      * @memberof AuthToken
      */
-    username: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof AuthToken
-     */
-    password: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof AuthToken
-     */
-    readonly token: string;
+    readonly token?: string;
 }
 
 /**
@@ -44,9 +32,6 @@ export interface AuthToken {
  */
 export function instanceOfAuthToken(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "username" in value;
-    isInstance = isInstance && "password" in value;
-    isInstance = isInstance && "token" in value;
 
     return isInstance;
 }
@@ -61,9 +46,7 @@ export function AuthTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'username': json['username'],
-        'password': json['password'],
-        'token': json['token'],
+        'token': !exists(json, 'token') ? undefined : json['token'],
     };
 }
 
@@ -76,8 +59,6 @@ export function AuthTokenToJSON(value?: AuthToken | null): any {
     }
     return {
         
-        'username': value.username,
-        'password': value.password,
     };
 }
 

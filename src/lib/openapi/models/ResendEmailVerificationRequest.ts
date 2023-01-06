@@ -16,31 +16,31 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface ResendEmailVerification
+ * @interface ResendEmailVerificationRequest
  */
-export interface ResendEmailVerification {
+export interface ResendEmailVerificationRequest {
     /**
      * 
      * @type {string}
-     * @memberof ResendEmailVerification
+     * @memberof ResendEmailVerificationRequest
      */
     email?: string;
 }
 
 /**
- * Check if a given object implements the ResendEmailVerification interface.
+ * Check if a given object implements the ResendEmailVerificationRequest interface.
  */
-export function instanceOfResendEmailVerification(value: object): boolean {
+export function instanceOfResendEmailVerificationRequest(value: object): boolean {
     let isInstance = true;
 
     return isInstance;
 }
 
-export function ResendEmailVerificationFromJSON(json: any): ResendEmailVerification {
-    return ResendEmailVerificationFromJSONTyped(json, false);
+export function ResendEmailVerificationRequestFromJSON(json: any): ResendEmailVerificationRequest {
+    return ResendEmailVerificationRequestFromJSONTyped(json, false);
 }
 
-export function ResendEmailVerificationFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResendEmailVerification {
+export function ResendEmailVerificationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResendEmailVerificationRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -50,7 +50,7 @@ export function ResendEmailVerificationFromJSONTyped(json: any, ignoreDiscrimina
     };
 }
 
-export function ResendEmailVerificationToJSON(value?: ResendEmailVerification | null): any {
+export function ResendEmailVerificationRequestToJSON(value?: ResendEmailVerificationRequest | null): any {
     if (value === undefined) {
         return undefined;
     }

@@ -16,69 +16,56 @@ import { exists, mapValues } from '../runtime';
 /**
  * User model w/o password
  * @export
- * @interface PatchedUserDetails
+ * @interface UserDetailsRequest
  */
-export interface PatchedUserDetails {
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchedUserDetails
-     */
-    readonly pk?: number;
+export interface UserDetailsRequest {
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
      * @type {string}
-     * @memberof PatchedUserDetails
+     * @memberof UserDetailsRequest
      */
-    username?: string;
+    username: string;
     /**
      * 
      * @type {string}
-     * @memberof PatchedUserDetails
-     */
-    readonly email?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchedUserDetails
+     * @memberof UserDetailsRequest
      */
     firstName?: string;
     /**
      * 
      * @type {string}
-     * @memberof PatchedUserDetails
+     * @memberof UserDetailsRequest
      */
     lastName?: string;
 }
 
 /**
- * Check if a given object implements the PatchedUserDetails interface.
+ * Check if a given object implements the UserDetailsRequest interface.
  */
-export function instanceOfPatchedUserDetails(value: object): boolean {
+export function instanceOfUserDetailsRequest(value: object): boolean {
     let isInstance = true;
+    isInstance = isInstance && "username" in value;
 
     return isInstance;
 }
 
-export function PatchedUserDetailsFromJSON(json: any): PatchedUserDetails {
-    return PatchedUserDetailsFromJSONTyped(json, false);
+export function UserDetailsRequestFromJSON(json: any): UserDetailsRequest {
+    return UserDetailsRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserDetailsFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserDetails {
+export function UserDetailsRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserDetailsRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'pk': !exists(json, 'pk') ? undefined : json['pk'],
-        'username': !exists(json, 'username') ? undefined : json['username'],
-        'email': !exists(json, 'email') ? undefined : json['email'],
+        'username': json['username'],
         'firstName': !exists(json, 'first_name') ? undefined : json['first_name'],
         'lastName': !exists(json, 'last_name') ? undefined : json['last_name'],
     };
 }
 
-export function PatchedUserDetailsToJSON(value?: PatchedUserDetails | null): any {
+export function UserDetailsRequestToJSON(value?: UserDetailsRequest | null): any {
     if (value === undefined) {
         return undefined;
     }

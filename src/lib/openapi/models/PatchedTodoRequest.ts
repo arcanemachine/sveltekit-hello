@@ -16,56 +16,48 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface Todo
+ * @interface PatchedTodoRequest
  */
-export interface Todo {
-    /**
-     * 
-     * @type {number}
-     * @memberof Todo
-     */
-    readonly id?: number;
+export interface PatchedTodoRequest {
     /**
      * 
      * @type {string}
-     * @memberof Todo
+     * @memberof PatchedTodoRequest
      */
-    content: string;
+    content?: string;
     /**
      * 
      * @type {boolean}
-     * @memberof Todo
+     * @memberof PatchedTodoRequest
      */
     isCompleted?: boolean;
 }
 
 /**
- * Check if a given object implements the Todo interface.
+ * Check if a given object implements the PatchedTodoRequest interface.
  */
-export function instanceOfTodo(value: object): boolean {
+export function instanceOfPatchedTodoRequest(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "content" in value;
 
     return isInstance;
 }
 
-export function TodoFromJSON(json: any): Todo {
-    return TodoFromJSONTyped(json, false);
+export function PatchedTodoRequestFromJSON(json: any): PatchedTodoRequest {
+    return PatchedTodoRequestFromJSONTyped(json, false);
 }
 
-export function TodoFromJSONTyped(json: any, ignoreDiscriminator: boolean): Todo {
+export function PatchedTodoRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedTodoRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'id': !exists(json, 'id') ? undefined : json['id'],
-        'content': json['content'],
+        'content': !exists(json, 'content') ? undefined : json['content'],
         'isCompleted': !exists(json, 'is_completed') ? undefined : json['is_completed'],
     };
 }
 
-export function TodoToJSON(value?: Todo | null): any {
+export function PatchedTodoRequestToJSON(value?: PatchedTodoRequest | null): any {
     if (value === undefined) {
         return undefined;
     }

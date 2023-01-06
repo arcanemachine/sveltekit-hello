@@ -16,32 +16,32 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface VerifyEmail
+ * @interface VerifyEmailRequest
  */
-export interface VerifyEmail {
+export interface VerifyEmailRequest {
     /**
      * 
      * @type {string}
-     * @memberof VerifyEmail
+     * @memberof VerifyEmailRequest
      */
     key: string;
 }
 
 /**
- * Check if a given object implements the VerifyEmail interface.
+ * Check if a given object implements the VerifyEmailRequest interface.
  */
-export function instanceOfVerifyEmail(value: object): boolean {
+export function instanceOfVerifyEmailRequest(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "key" in value;
 
     return isInstance;
 }
 
-export function VerifyEmailFromJSON(json: any): VerifyEmail {
-    return VerifyEmailFromJSONTyped(json, false);
+export function VerifyEmailRequestFromJSON(json: any): VerifyEmailRequest {
+    return VerifyEmailRequestFromJSONTyped(json, false);
 }
 
-export function VerifyEmailFromJSONTyped(json: any, ignoreDiscriminator: boolean): VerifyEmail {
+export function VerifyEmailRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): VerifyEmailRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -51,7 +51,7 @@ export function VerifyEmailFromJSONTyped(json: any, ignoreDiscriminator: boolean
     };
 }
 
-export function VerifyEmailToJSON(value?: VerifyEmail | null): any {
+export function VerifyEmailRequestToJSON(value?: VerifyEmailRequest | null): any {
     if (value === undefined) {
         return undefined;
     }

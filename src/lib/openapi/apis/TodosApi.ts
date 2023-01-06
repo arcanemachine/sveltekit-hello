@@ -15,18 +15,21 @@
 
 import * as runtime from '../runtime';
 import type {
-  PatchedTodo,
+  PatchedTodoRequest,
   Todo,
+  TodoRequest,
 } from '../models';
 import {
-    PatchedTodoFromJSON,
-    PatchedTodoToJSON,
+    PatchedTodoRequestFromJSON,
+    PatchedTodoRequestToJSON,
     TodoFromJSON,
     TodoToJSON,
+    TodoRequestFromJSON,
+    TodoRequestToJSON,
 } from '../models';
 
 export interface TodosCreateRequest {
-    todo: Todo;
+    todoRequest: TodoRequest;
 }
 
 export interface TodosDestroyRequest {
@@ -35,7 +38,7 @@ export interface TodosDestroyRequest {
 
 export interface TodosPartialUpdateRequest {
     id: number;
-    patchedTodo?: PatchedTodo;
+    patchedTodoRequest?: PatchedTodoRequest;
 }
 
 export interface TodosRetrieveRequest {
@@ -44,7 +47,7 @@ export interface TodosRetrieveRequest {
 
 export interface TodosUpdateRequest {
     id: number;
-    todo: Todo;
+    todoRequest: TodoRequest;
 }
 
 /**
@@ -55,8 +58,8 @@ export class TodosApi extends runtime.BaseAPI {
     /**
      */
     async todosCreateRaw(requestParameters: TodosCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Todo>> {
-        if (requestParameters.todo === null || requestParameters.todo === undefined) {
-            throw new runtime.RequiredError('todo','Required parameter requestParameters.todo was null or undefined when calling todosCreate.');
+        if (requestParameters.todoRequest === null || requestParameters.todoRequest === undefined) {
+            throw new runtime.RequiredError('todoRequest','Required parameter requestParameters.todoRequest was null or undefined when calling todosCreate.');
         }
 
         const queryParameters: any = {};
@@ -74,7 +77,7 @@ export class TodosApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TodoToJSON(requestParameters.todo),
+            body: TodoRequestToJSON(requestParameters.todoRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => TodoFromJSON(jsonValue));
@@ -168,7 +171,7 @@ export class TodosApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedTodoToJSON(requestParameters.patchedTodo),
+            body: PatchedTodoRequestToJSON(requestParameters.patchedTodoRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => TodoFromJSON(jsonValue));
@@ -220,8 +223,8 @@ export class TodosApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling todosUpdate.');
         }
 
-        if (requestParameters.todo === null || requestParameters.todo === undefined) {
-            throw new runtime.RequiredError('todo','Required parameter requestParameters.todo was null or undefined when calling todosUpdate.');
+        if (requestParameters.todoRequest === null || requestParameters.todoRequest === undefined) {
+            throw new runtime.RequiredError('todoRequest','Required parameter requestParameters.todoRequest was null or undefined when calling todosUpdate.');
         }
 
         const queryParameters: any = {};
@@ -239,7 +242,7 @@ export class TodosApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: TodoToJSON(requestParameters.todo),
+            body: TodoRequestToJSON(requestParameters.todoRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => TodoFromJSON(jsonValue));

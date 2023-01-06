@@ -17,88 +17,89 @@ import * as runtime from '../runtime';
 import type {
   AuthToken,
   Login,
-  PasswordChange,
-  PasswordReset,
-  PasswordResetConfirm,
-  PatchedUserDetails,
-  Register,
-  ResendEmailVerification,
+  LoginRequest,
+  PasswordChangeRequest,
+  PasswordResetConfirmRequest,
+  PasswordResetRequest,
+  PatchedUserDetailsRequest,
+  RegisterRequest,
+  ResendEmailVerificationRequest,
   RestAuthDetail,
   Token,
   UserDetails,
-  VerifyEmail,
+  UserDetailsRequest,
+  VerifyEmailRequest,
 } from '../models';
 import {
     AuthTokenFromJSON,
     AuthTokenToJSON,
     LoginFromJSON,
     LoginToJSON,
-    PasswordChangeFromJSON,
-    PasswordChangeToJSON,
-    PasswordResetFromJSON,
-    PasswordResetToJSON,
-    PasswordResetConfirmFromJSON,
-    PasswordResetConfirmToJSON,
-    PatchedUserDetailsFromJSON,
-    PatchedUserDetailsToJSON,
-    RegisterFromJSON,
-    RegisterToJSON,
-    ResendEmailVerificationFromJSON,
-    ResendEmailVerificationToJSON,
+    LoginRequestFromJSON,
+    LoginRequestToJSON,
+    PasswordChangeRequestFromJSON,
+    PasswordChangeRequestToJSON,
+    PasswordResetConfirmRequestFromJSON,
+    PasswordResetConfirmRequestToJSON,
+    PasswordResetRequestFromJSON,
+    PasswordResetRequestToJSON,
+    PatchedUserDetailsRequestFromJSON,
+    PatchedUserDetailsRequestToJSON,
+    RegisterRequestFromJSON,
+    RegisterRequestToJSON,
+    ResendEmailVerificationRequestFromJSON,
+    ResendEmailVerificationRequestToJSON,
     RestAuthDetailFromJSON,
     RestAuthDetailToJSON,
     TokenFromJSON,
     TokenToJSON,
     UserDetailsFromJSON,
     UserDetailsToJSON,
-    VerifyEmailFromJSON,
-    VerifyEmailToJSON,
+    UserDetailsRequestFromJSON,
+    UserDetailsRequestToJSON,
+    VerifyEmailRequestFromJSON,
+    VerifyEmailRequestToJSON,
 } from '../models';
 
 export interface AuthLoginCreateRequest {
-    login: Login;
-}
-
-export interface AuthLoginSessionCreateRequest {
-    login: Login;
+    loginRequest: LoginRequest;
 }
 
 export interface AuthLoginTokenCreateRequest {
     username: string;
     password: string;
-    token: string;
 }
 
 export interface AuthPasswordChangeCreateRequest {
-    passwordChange: PasswordChange;
+    passwordChangeRequest: PasswordChangeRequest;
 }
 
 export interface AuthPasswordResetConfirmCreateRequest {
-    passwordResetConfirm: PasswordResetConfirm;
+    passwordResetConfirmRequest: PasswordResetConfirmRequest;
 }
 
 export interface AuthPasswordResetCreateRequest {
-    passwordReset: PasswordReset;
+    passwordResetRequest: PasswordResetRequest;
 }
 
 export interface AuthRegistrationCreateRequest {
-    register: Register;
+    registerRequest: RegisterRequest;
 }
 
 export interface AuthRegistrationResendEmailCreateRequest {
-    resendEmailVerification?: ResendEmailVerification;
+    resendEmailVerificationRequest?: ResendEmailVerificationRequest;
 }
 
 export interface AuthRegistrationVerifyEmailCreateRequest {
-    verifyEmail: VerifyEmail;
+    verifyEmailRequest: VerifyEmailRequest;
 }
 
 export interface AuthUserPartialUpdateRequest {
-    patchedUserDetails?: PatchedUserDetails;
+    patchedUserDetailsRequest?: PatchedUserDetailsRequest;
 }
 
 export interface AuthUserUpdateRequest {
-    userDetails: UserDetails;
+    userDetailsRequest: UserDetailsRequest;
 }
 
 /**
@@ -109,9 +110,9 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
      */
-    async authLoginCreateRaw(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Token>> {
-        if (requestParameters.login === null || requestParameters.login === undefined) {
-            throw new runtime.RequiredError('login','Required parameter requestParameters.login was null or undefined when calling authLoginCreate.');
+    async authLoginCreateRaw(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Login>> {
+        if (requestParameters.loginRequest === null || requestParameters.loginRequest === undefined) {
+            throw new runtime.RequiredError('loginRequest','Required parameter requestParameters.loginRequest was null or undefined when calling authLoginCreate.');
         }
 
         const queryParameters: any = {};
@@ -119,54 +120,13 @@ export class AuthApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // tokenAuth authentication
-        }
 
         const response = await this.request({
             path: `/api/auth/login/`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LoginToJSON(requestParameters.login),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => TokenFromJSON(jsonValue));
-    }
-
-    /**
-     * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
-     */
-    async authLoginCreate(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Token> {
-        const response = await this.authLoginCreateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
-     */
-    async authLoginSessionCreateRaw(requestParameters: AuthLoginSessionCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Login>> {
-        if (requestParameters.login === null || requestParameters.login === undefined) {
-            throw new runtime.RequiredError('login','Required parameter requestParameters.login was null or undefined when calling authLoginSessionCreate.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // tokenAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/api/auth/login/session/`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: LoginToJSON(requestParameters.login),
+            body: LoginRequestToJSON(requestParameters.loginRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => LoginFromJSON(jsonValue));
@@ -175,8 +135,8 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
      */
-    async authLoginSessionCreate(requestParameters: AuthLoginSessionCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Login> {
-        const response = await this.authLoginSessionCreateRaw(requestParameters, initOverrides);
+    async authLoginCreate(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Login> {
+        const response = await this.authLoginCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -189,10 +149,6 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (requestParameters.password === null || requestParameters.password === undefined) {
             throw new runtime.RequiredError('password','Required parameter requestParameters.password was null or undefined when calling authLoginTokenCreate.');
-        }
-
-        if (requestParameters.token === null || requestParameters.token === undefined) {
-            throw new runtime.RequiredError('token','Required parameter requestParameters.token was null or undefined when calling authLoginTokenCreate.');
         }
 
         const queryParameters: any = {};
@@ -225,10 +181,6 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (requestParameters.password !== undefined) {
             formParams.append('password', requestParameters.password as any);
-        }
-
-        if (requestParameters.token !== undefined) {
-            formParams.append('token', requestParameters.token as any);
         }
 
         const response = await this.request({
@@ -283,8 +235,8 @@ export class AuthApi extends runtime.BaseAPI {
      * Calls Django Auth SetPasswordForm save method.  Accepts the following POST parameters: new_password1, new_password2 Returns the success/fail message.
      */
     async authPasswordChangeCreateRaw(requestParameters: AuthPasswordChangeCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RestAuthDetail>> {
-        if (requestParameters.passwordChange === null || requestParameters.passwordChange === undefined) {
-            throw new runtime.RequiredError('passwordChange','Required parameter requestParameters.passwordChange was null or undefined when calling authPasswordChangeCreate.');
+        if (requestParameters.passwordChangeRequest === null || requestParameters.passwordChangeRequest === undefined) {
+            throw new runtime.RequiredError('passwordChangeRequest','Required parameter requestParameters.passwordChangeRequest was null or undefined when calling authPasswordChangeCreate.');
         }
 
         const queryParameters: any = {};
@@ -302,7 +254,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PasswordChangeToJSON(requestParameters.passwordChange),
+            body: PasswordChangeRequestToJSON(requestParameters.passwordChangeRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RestAuthDetailFromJSON(jsonValue));
@@ -320,8 +272,8 @@ export class AuthApi extends runtime.BaseAPI {
      * Password reset e-mail link is confirmed, therefore this resets the user\'s password.  Accepts the following POST parameters: token, uid,     new_password1, new_password2 Returns the success/fail message.
      */
     async authPasswordResetConfirmCreateRaw(requestParameters: AuthPasswordResetConfirmCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RestAuthDetail>> {
-        if (requestParameters.passwordResetConfirm === null || requestParameters.passwordResetConfirm === undefined) {
-            throw new runtime.RequiredError('passwordResetConfirm','Required parameter requestParameters.passwordResetConfirm was null or undefined when calling authPasswordResetConfirmCreate.');
+        if (requestParameters.passwordResetConfirmRequest === null || requestParameters.passwordResetConfirmRequest === undefined) {
+            throw new runtime.RequiredError('passwordResetConfirmRequest','Required parameter requestParameters.passwordResetConfirmRequest was null or undefined when calling authPasswordResetConfirmCreate.');
         }
 
         const queryParameters: any = {};
@@ -339,7 +291,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PasswordResetConfirmToJSON(requestParameters.passwordResetConfirm),
+            body: PasswordResetConfirmRequestToJSON(requestParameters.passwordResetConfirmRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RestAuthDetailFromJSON(jsonValue));
@@ -357,8 +309,8 @@ export class AuthApi extends runtime.BaseAPI {
      * Calls Django Auth PasswordResetForm save method.  Accepts the following POST parameters: email Returns the success/fail message.
      */
     async authPasswordResetCreateRaw(requestParameters: AuthPasswordResetCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RestAuthDetail>> {
-        if (requestParameters.passwordReset === null || requestParameters.passwordReset === undefined) {
-            throw new runtime.RequiredError('passwordReset','Required parameter requestParameters.passwordReset was null or undefined when calling authPasswordResetCreate.');
+        if (requestParameters.passwordResetRequest === null || requestParameters.passwordResetRequest === undefined) {
+            throw new runtime.RequiredError('passwordResetRequest','Required parameter requestParameters.passwordResetRequest was null or undefined when calling authPasswordResetCreate.');
         }
 
         const queryParameters: any = {};
@@ -376,7 +328,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PasswordResetToJSON(requestParameters.passwordReset),
+            body: PasswordResetRequestToJSON(requestParameters.passwordResetRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RestAuthDetailFromJSON(jsonValue));
@@ -393,8 +345,8 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      */
     async authRegistrationCreateRaw(requestParameters: AuthRegistrationCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Token>> {
-        if (requestParameters.register === null || requestParameters.register === undefined) {
-            throw new runtime.RequiredError('register','Required parameter requestParameters.register was null or undefined when calling authRegistrationCreate.');
+        if (requestParameters.registerRequest === null || requestParameters.registerRequest === undefined) {
+            throw new runtime.RequiredError('registerRequest','Required parameter requestParameters.registerRequest was null or undefined when calling authRegistrationCreate.');
         }
 
         const queryParameters: any = {};
@@ -412,7 +364,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RegisterToJSON(requestParameters.register),
+            body: RegisterRequestToJSON(requestParameters.registerRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => TokenFromJSON(jsonValue));
@@ -443,7 +395,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ResendEmailVerificationToJSON(requestParameters.resendEmailVerification),
+            body: ResendEmailVerificationRequestToJSON(requestParameters.resendEmailVerificationRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RestAuthDetailFromJSON(jsonValue));
@@ -459,8 +411,8 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      */
     async authRegistrationVerifyEmailCreateRaw(requestParameters: AuthRegistrationVerifyEmailCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RestAuthDetail>> {
-        if (requestParameters.verifyEmail === null || requestParameters.verifyEmail === undefined) {
-            throw new runtime.RequiredError('verifyEmail','Required parameter requestParameters.verifyEmail was null or undefined when calling authRegistrationVerifyEmailCreate.');
+        if (requestParameters.verifyEmailRequest === null || requestParameters.verifyEmailRequest === undefined) {
+            throw new runtime.RequiredError('verifyEmailRequest','Required parameter requestParameters.verifyEmailRequest was null or undefined when calling authRegistrationVerifyEmailCreate.');
         }
 
         const queryParameters: any = {};
@@ -478,7 +430,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: VerifyEmailToJSON(requestParameters.verifyEmail),
+            body: VerifyEmailRequestToJSON(requestParameters.verifyEmailRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RestAuthDetailFromJSON(jsonValue));
@@ -510,7 +462,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserDetailsToJSON(requestParameters.patchedUserDetails),
+            body: PatchedUserDetailsRequestToJSON(requestParameters.patchedUserDetailsRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserDetailsFromJSON(jsonValue));
@@ -558,8 +510,8 @@ export class AuthApi extends runtime.BaseAPI {
      * Reads and updates UserModel fields Accepts GET, PUT, PATCH methods.  Default accepted fields: username, first_name, last_name Default display fields: pk, username, email, first_name, last_name Read-only fields: pk, email  Returns UserModel fields.
      */
     async authUserUpdateRaw(requestParameters: AuthUserUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserDetails>> {
-        if (requestParameters.userDetails === null || requestParameters.userDetails === undefined) {
-            throw new runtime.RequiredError('userDetails','Required parameter requestParameters.userDetails was null or undefined when calling authUserUpdate.');
+        if (requestParameters.userDetailsRequest === null || requestParameters.userDetailsRequest === undefined) {
+            throw new runtime.RequiredError('userDetailsRequest','Required parameter requestParameters.userDetailsRequest was null or undefined when calling authUserUpdate.');
         }
 
         const queryParameters: any = {};
@@ -577,7 +529,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: UserDetailsToJSON(requestParameters.userDetails),
+            body: UserDetailsRequestToJSON(requestParameters.userDetailsRequest),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserDetailsFromJSON(jsonValue));

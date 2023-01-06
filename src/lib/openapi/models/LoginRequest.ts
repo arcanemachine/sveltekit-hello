@@ -16,65 +16,56 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface Register
+ * @interface LoginRequest
  */
-export interface Register {
+export interface LoginRequest {
     /**
      * 
      * @type {string}
-     * @memberof Register
+     * @memberof LoginRequest
      */
-    username: string;
+    username?: string;
     /**
      * 
      * @type {string}
-     * @memberof Register
+     * @memberof LoginRequest
      */
     email?: string;
     /**
      * 
      * @type {string}
-     * @memberof Register
+     * @memberof LoginRequest
      */
-    password1: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Register
-     */
-    password2: string;
+    password: string;
 }
 
 /**
- * Check if a given object implements the Register interface.
+ * Check if a given object implements the LoginRequest interface.
  */
-export function instanceOfRegister(value: object): boolean {
+export function instanceOfLoginRequest(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "username" in value;
-    isInstance = isInstance && "password1" in value;
-    isInstance = isInstance && "password2" in value;
+    isInstance = isInstance && "password" in value;
 
     return isInstance;
 }
 
-export function RegisterFromJSON(json: any): Register {
-    return RegisterFromJSONTyped(json, false);
+export function LoginRequestFromJSON(json: any): LoginRequest {
+    return LoginRequestFromJSONTyped(json, false);
 }
 
-export function RegisterFromJSONTyped(json: any, ignoreDiscriminator: boolean): Register {
+export function LoginRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): LoginRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'username': json['username'],
+        'username': !exists(json, 'username') ? undefined : json['username'],
         'email': !exists(json, 'email') ? undefined : json['email'],
-        'password1': json['password1'],
-        'password2': json['password2'],
+        'password': json['password'],
     };
 }
 
-export function RegisterToJSON(value?: Register | null): any {
+export function LoginRequestToJSON(value?: LoginRequest | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -85,8 +76,7 @@ export function RegisterToJSON(value?: Register | null): any {
         
         'username': value.username,
         'email': value.email,
-        'password1': value.password1,
-        'password2': value.password2,
+        'password': value.password,
     };
 }
 
