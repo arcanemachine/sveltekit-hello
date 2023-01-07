@@ -4,7 +4,7 @@ import type { Todo } from "$lib/openapi";
 import type { TodosStore } from "$types";
 
 export const todoFormInputText: Writable<string> = writable("");
-export const todoIdSelected: Writable<number> = writable(0);
+export const todoIdSelected: Writable<number | undefined> = writable(0);
 export const todoDeleteModalVisible: Writable<boolean> = writable(false);
 
 export const todos: TodosStore = (() => {

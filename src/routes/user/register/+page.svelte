@@ -14,14 +14,14 @@
   import { api, user } from "$stores";
 
   // data
-  const registerSchema = $api.schema.components.schemas.Register;
+  const registerSchema = $api.schema.components.schemas.RegisterRequest;
   const sProps = {
     username: registerSchema.properties.username,
     email: registerSchema.properties.email,
     password1: registerSchema.properties.password1,
     password2: registerSchema.properties.password2,
   };
-  const sRequired = $api.schema.components.schemas.Register.required;
+  const sRequired = $api.schema.components.schemas.RegisterRequest.required;
 
   // lifecycle
   onMount(() => {
@@ -58,7 +58,7 @@
     },
     onSubmit: async (values) => {
       const params: AuthRegistrationCreateRequest = {
-        register: {
+        registerRequest: {
           username: values.username,
           email: values.email,
           password1: values.password1,

@@ -39,9 +39,11 @@
         <button class="btn-primary btn">Change Email</button>
       </div>
       -->
-      <div class="form-control mx-auto w-full max-w-xs">
-        <a href="/user/change-password" class="btn-primary btn">Change Password</a>
-      </div>
+      <!--
+        <div class="form-control mx-auto w-full max-w-xs">
+          <a href="/user/change-password" class="btn-primary btn">Change Password</a>
+        </div>
+      -->
       <div class="form-control mx-auto mt-6 w-full max-w-xs">
         <a href="/user/logout" class="btn-secondary btn">Logout</a>
       </div>

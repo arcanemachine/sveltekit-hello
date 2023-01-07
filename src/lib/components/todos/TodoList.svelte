@@ -29,7 +29,7 @@
   });
 
   // methods
-  function todoHandleClick(todoId: number) {
+  function todoHandleClick(todoId?: number) {
     if ($todoIdSelected !== todoId) {
       // enable item update form
       $todoIdSelected = todoId;
@@ -41,13 +41,13 @@
     }
   }
 
-  async function todoUpdateIsCompleted(todoId: number) {
+  async function todoUpdateIsCompleted(todoId?: number) {
     const todo = $todos.filter((todo) => todo.id === todoId)[0];
     const todoIndex = $todos.indexOf(todo);
 
     const params: TodosPartialUpdateRequest = {
-      id: todoId,
-      patchedTodo: {
+      id: todoId as number,
+      patchedTodoRequest: {
         isCompleted: !todo.isCompleted,
       },
     };
@@ -103,7 +103,7 @@
                 bind:checked={todo.isCompleted}
                 class="checkbox"
                 on:click={() => {
-                  todoUpdateIsCompleted(todo.id);
+                  todoUpdateIsCompleted(todo?.id);
                 }}
               />
             </label>

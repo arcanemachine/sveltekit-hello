@@ -20,8 +20,7 @@
     if (!$todoFormInputText) return; // if text input field is blank, don't do anything
 
     const params: TodosCreateRequest = {
-      todo: {
-        id: 0,
+      todoRequest: {
         content: $todoFormInputText,
         isCompleted: false,
       },
@@ -38,8 +37,8 @@
 
   async function todoUpdateContent() {
     const params: TodosPartialUpdateRequest = {
-      id: $todoIdSelected,
-      patchedTodo: {
+      id: $todoIdSelected as number,
+      patchedTodoRequest: {
         content: $todoFormInputText,
       },
     };

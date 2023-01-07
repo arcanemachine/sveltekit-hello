@@ -1,4 +1,4 @@
-<script lang="ts">
+<!--script lang="ts">
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
 
@@ -7,14 +7,14 @@
 
   import { CsrfEnsure } from "$components/base";
   import type { AuthLoginCreateRequest } from "$lib/openapi";
-  import { apiStore, user } from "$stores";
+  import { api, user } from "$stores";
   import { csrfTokensGet, formHelpers, toastCreate, userAuthStatusCheck } from "$helpers";
 
   // lifecycle
   onMount(async () => {
     // check if user is already logged in
     if ($user.isLoggedIn) {
-      if (!(await userAuthStatusCheck($apiStore.csrfmiddlewaretoken))) {
+      if (!(await userAuthStatusCheck($api.csrfmiddlewaretoken))) {
         // if authentication cookies are expired, remove frontend auth status
         user.logout(user);
       } else {
@@ -40,7 +40,7 @@
     onSubmit: async (values: any) => {
       // build params
       const params: AuthLoginCreateRequest = {
-        login: {
+        loginRequest: {
           username: values.username,
           password: values.password,
         },
@@ -49,10 +49,7 @@
       // get response
       let response;
       try {
-        response = await $apiStore.apis.auth.authLoginCreate(
-          params,
-          $apiStore.overrides as RequestInit
-        );
+        response = await $api.apis.auth.authLoginCreate(params, $api.overrides as RequestInit);
       } catch (errors: any) {
         throw JSON.parse(await errors.response.text()); // throw parsed errors
       }
@@ -67,7 +64,7 @@
       const values = res.values;
       res = res.response;
 
-      $apiStore.csrfmiddlewaretoken = await csrfTokensGet(); // get new CSRF middleware token
+      $api.csrfmiddlewaretoken = await csrfTokensGet(); // get new CSRF middleware token
       user.login(user, values.username); // update frontend auth status
       toastCreate("Login successful", "success"); // success message
       goto("/todos"); // success URL
@@ -118,4 +115,4 @@
   <div class="action-links">
     <a class="block" href="/user/register">Register new Account</a>
   </div>
-</section>
+</section-->
