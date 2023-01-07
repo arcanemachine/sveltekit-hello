@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   AuthToken,
+  GCMDeviceRequest,
   Login,
   LoginRequest,
   PasswordChangeRequest,
@@ -33,6 +34,8 @@ import type {
 import {
     AuthTokenFromJSON,
     AuthTokenToJSON,
+    GCMDeviceRequestFromJSON,
+    GCMDeviceRequestToJSON,
     LoginFromJSON,
     LoginToJSON,
     LoginRequestFromJSON,
@@ -60,6 +63,10 @@ import {
     VerifyEmailRequestFromJSON,
     VerifyEmailRequestToJSON,
 } from '../models';
+
+export interface AuthFcmCreateRequest {
+    gCMDeviceRequest: GCMDeviceRequest;
+}
 
 export interface AuthLoginCreateRequest {
     loginRequest: LoginRequest;
@@ -106,6 +113,71 @@ export interface AuthUserUpdateRequest {
  * 
  */
 export class AuthApi extends runtime.BaseAPI {
+
+    /**
+     * Register or unregister a device with Firebase Cloud Messaging (FCM).
+     */
+    async authFcmCreateRaw(requestParameters: AuthFcmCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.gCMDeviceRequest === null || requestParameters.gCMDeviceRequest === undefined) {
+            throw new runtime.RequiredError('gCMDeviceRequest','Required parameter requestParameters.gCMDeviceRequest was null or undefined when calling authFcmCreate.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // tokenAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/api/auth/fcm/`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: GCMDeviceRequestToJSON(requestParameters.gCMDeviceRequest),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Register or unregister a device with Firebase Cloud Messaging (FCM).
+     */
+    async authFcmCreate(requestParameters: AuthFcmCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.authFcmCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Register or unregister a device with Firebase Cloud Messaging (FCM).
+     */
+    async authFcmDestroyRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // tokenAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/api/auth/fcm/`,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Register or unregister a device with Firebase Cloud Messaging (FCM).
+     */
+    async authFcmDestroy(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.authFcmDestroyRaw(initOverrides);
+    }
 
     /**
      * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
