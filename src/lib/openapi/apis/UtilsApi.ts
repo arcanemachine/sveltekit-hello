@@ -15,9 +15,12 @@
 
 import * as runtime from '../runtime';
 import type {
+  Csrfmiddlewaretoken,
   CsrfmiddlewaretokenRequest,
 } from '../models';
 import {
+    CsrfmiddlewaretokenFromJSON,
+    CsrfmiddlewaretokenToJSON,
     CsrfmiddlewaretokenRequestFromJSON,
     CsrfmiddlewaretokenRequestToJSON,
 } from '../models';
@@ -33,7 +36,7 @@ export class UtilsApi extends runtime.BaseAPI {
 
     /**
      */
-    async utilsCsrfmiddlewaretokenCreateRaw(requestParameters: UtilsCsrfmiddlewaretokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async utilsCsrfmiddlewaretokenCreateRaw(requestParameters: UtilsCsrfmiddlewaretokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Csrfmiddlewaretoken>> {
         if (requestParameters.csrfmiddlewaretokenRequest === null || requestParameters.csrfmiddlewaretokenRequest === undefined) {
             throw new runtime.RequiredError('csrfmiddlewaretokenRequest','Required parameter requestParameters.csrfmiddlewaretokenRequest was null or undefined when calling utilsCsrfmiddlewaretokenCreate.');
         }
@@ -56,18 +59,19 @@ export class UtilsApi extends runtime.BaseAPI {
             body: CsrfmiddlewaretokenRequestToJSON(requestParameters.csrfmiddlewaretokenRequest),
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => CsrfmiddlewaretokenFromJSON(jsonValue));
     }
 
     /**
      */
-    async utilsCsrfmiddlewaretokenCreate(requestParameters: UtilsCsrfmiddlewaretokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.utilsCsrfmiddlewaretokenCreateRaw(requestParameters, initOverrides);
+    async utilsCsrfmiddlewaretokenCreate(requestParameters: UtilsCsrfmiddlewaretokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Csrfmiddlewaretoken> {
+        const response = await this.utilsCsrfmiddlewaretokenCreateRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
      */
-    async utilsCsrfmiddlewaretokenRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async utilsCsrfmiddlewaretokenRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Csrfmiddlewaretoken>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -83,13 +87,14 @@ export class UtilsApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => CsrfmiddlewaretokenFromJSON(jsonValue));
     }
 
     /**
      */
-    async utilsCsrfmiddlewaretokenRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.utilsCsrfmiddlewaretokenRetrieveRaw(initOverrides);
+    async utilsCsrfmiddlewaretokenRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Csrfmiddlewaretoken> {
+        const response = await this.utilsCsrfmiddlewaretokenRetrieveRaw(initOverrides);
+        return await response.value();
     }
 
 }

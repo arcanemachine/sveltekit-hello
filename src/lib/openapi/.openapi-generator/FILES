@@ -6,7 +6,9 @@ apis/index.ts
 index.ts
 models/AuthToken.ts
 models/AuthTokenRequest.ts
+models/Csrfmiddlewaretoken.ts
 models/CsrfmiddlewaretokenRequest.ts
+models/DrfAuthtoken.ts
 models/GCMDeviceRequest.ts
 models/Login.ts
 models/LoginRequest.ts

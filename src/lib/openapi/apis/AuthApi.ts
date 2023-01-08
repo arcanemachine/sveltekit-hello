@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   AuthToken,
+  DrfAuthtoken,
   GCMDeviceRequest,
   Login,
   LoginRequest,
@@ -34,6 +35,8 @@ import type {
 import {
     AuthTokenFromJSON,
     AuthTokenToJSON,
+    DrfAuthtokenFromJSON,
+    DrfAuthtokenToJSON,
     GCMDeviceRequestFromJSON,
     GCMDeviceRequestToJSON,
     LoginFromJSON,
@@ -65,6 +68,10 @@ import {
 } from '../models';
 
 export interface AuthFcmCreateRequest {
+    gCMDeviceRequest: GCMDeviceRequest;
+}
+
+export interface AuthFcmUpdateRequest {
     gCMDeviceRequest: GCMDeviceRequest;
 }
 
@@ -115,7 +122,63 @@ export interface AuthUserUpdateRequest {
 export class AuthApi extends runtime.BaseAPI {
 
     /**
-     * Register or unregister a device with Firebase Cloud Messaging (FCM).
+     * Check if a user is authenticated using session authentication.
+     */
+    async authCheckRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DrfAuthtoken>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/auth/check/`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DrfAuthtokenFromJSON(jsonValue));
+    }
+
+    /**
+     * Check if a user is authenticated using session authentication.
+     */
+    async authCheckRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DrfAuthtoken> {
+        const response = await this.authCheckRetrieveRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Check if a user is authenticated using token authentication.
+     */
+    async authCheckTokenRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DrfAuthtoken>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // tokenAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/api/auth/check/token/`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DrfAuthtokenFromJSON(jsonValue));
+    }
+
+    /**
+     * Check if a user is authenticated using token authentication.
+     */
+    async authCheckTokenRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DrfAuthtoken> {
+        const response = await this.authCheckTokenRetrieveRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Register a device with Firebase Cloud Messaging (FCM).
      */
     async authFcmCreateRaw(requestParameters: AuthFcmCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.gCMDeviceRequest === null || requestParameters.gCMDeviceRequest === undefined) {
@@ -144,19 +207,25 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
-     * Register or unregister a device with Firebase Cloud Messaging (FCM).
+     * Register a device with Firebase Cloud Messaging (FCM).
      */
     async authFcmCreate(requestParameters: AuthFcmCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authFcmCreateRaw(requestParameters, initOverrides);
     }
 
     /**
-     * Register or unregister a device with Firebase Cloud Messaging (FCM).
+     * Register a device with Firebase Cloud Messaging (FCM).
      */
-    async authFcmDestroyRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async authFcmUpdateRaw(requestParameters: AuthFcmUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.gCMDeviceRequest === null || requestParameters.gCMDeviceRequest === undefined) {
+            throw new runtime.RequiredError('gCMDeviceRequest','Required parameter requestParameters.gCMDeviceRequest was null or undefined when calling authFcmUpdate.');
+        }
+
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // tokenAuth authentication
@@ -164,23 +233,24 @@ export class AuthApi extends runtime.BaseAPI {
 
         const response = await this.request({
             path: `/api/auth/fcm/`,
-            method: 'DELETE',
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
+            body: GCMDeviceRequestToJSON(requestParameters.gCMDeviceRequest),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
     }
 
     /**
-     * Register or unregister a device with Firebase Cloud Messaging (FCM).
+     * Register a device with Firebase Cloud Messaging (FCM).
      */
-    async authFcmDestroy(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.authFcmDestroyRaw(initOverrides);
+    async authFcmUpdate(requestParameters: AuthFcmUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.authFcmUpdateRaw(requestParameters, initOverrides);
     }
 
     /**
-     * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
+     * Login using session authentication.
      */
     async authLoginCreateRaw(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Login>> {
         if (requestParameters.loginRequest === null || requestParameters.loginRequest === undefined) {
@@ -205,7 +275,7 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
-     * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object\'s key.
+     * Login using session authentication.
      */
     async authLoginCreate(requestParameters: AuthLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Login> {
         const response = await this.authLoginCreateRaw(requestParameters, initOverrides);
@@ -213,6 +283,7 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
+     * Login using token authentication.
      */
     async authLoginTokenCreateRaw(requestParameters: AuthLoginTokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthToken>> {
         if (requestParameters.username === null || requestParameters.username === undefined) {
@@ -267,6 +338,7 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
+     * Login using token authentication.
      */
     async authLoginTokenCreate(requestParameters: AuthLoginTokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthToken> {
         const response = await this.authLoginTokenCreateRaw(requestParameters, initOverrides);

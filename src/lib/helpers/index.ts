@@ -80,7 +80,11 @@ export const formHelpers: any = {
       toastCreate(errors.non_field_errors[0], "error");
       delete errors.non_field_errors;
     } else {
-      toastCreate("An error was detected in the form.", "error");
+      try {
+        toastCreate(JSON.stringify(errors));
+      } catch (err) {
+        toastCreate("An error was detected in the form.", "error");
+      }
     }
     return errors;
   },
